@@ -3,22 +3,19 @@ rule db_parse_uniprot_sprot:
         download + "uniprot_sprot.dat.gz"
     output:
         taxonomy = db + "trinotate.TaxonomyIndex",
-        uniprot = db +  "trinotate.UniprotIndex",
+        uniprot = db + "trinotate.UniprotIndex",
         pep = download + "uniprot_sprot.pep"
     params:
-        pep_tmp =  download + "uniprot_sprot.dat.gz.pep",
+        pep_tmp = download + "uniprot_sprot.dat.gz.pep",
         prefix = db + "trinotate"
     log:
         db + "parse_uniprot_sprot.log"
     benchmark:
         db + "parse_uniprot_sprot.josn"
     shell:
-        "EMBL_swissprot_parser.pl "
-            "{input} "
-            "{params.prefix} "
+        "EMBL_swissprot_parser.pl {input} {params.prefix} "
         "2> {log}; "
         "mv {params.pep_tmp} {output.pep}"
-
 
 
 rule db_obo_to_tab:
@@ -65,7 +62,6 @@ rule db_parse_pfam:
         "mv {params.tmp} {output} 2>> {log}"
 
 
-
 rule db_hmmpress_pfama:
     """
     Format the HMM Pfam-A database
@@ -76,18 +72,15 @@ rule db_hmmpress_pfama:
         hmm = db + "Pfam-A.hmm",
         other = expand(
             db + "Pfam-A.hmm.{extension}",
-            extension = "h3i h3f h3p".split()
+            extension="h3i h3f h3p".split()
         )
     log:
         db + "hmmpress_pfama.log"
     benchmark:
         db + "hmmpress_pfama.json"
     shell:
-        "gzip "
-            "--decompress --keep --stdout "
-            "{input.hmm_gz} "
-        "> {output.hmm} "
-        "2> {log}; "
+        "gzip --decompress --keep --stdout {input.hmm_gz} "
+        "> {output.hmm} 2> {log}; "
         "hmmpress {output.hmm} 2>> {log} 1>&2"
 
 

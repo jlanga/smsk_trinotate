@@ -8,7 +8,7 @@ apt_addons:
     - git
 
 cache:
-    folders:
+    directories:
         - data/download/
         - data/db/
         - $HOME/miniconda3/
