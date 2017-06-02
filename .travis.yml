@@ -22,4 +22,4 @@ before_install:
 script:
   - bash src/install/conda_env.sh
   - source activate smsk_trinotate
-  - snakemake -j
+  - travis_wait 30 snakemake -j

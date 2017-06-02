@@ -304,5 +304,5 @@ rule trinotate_report:
         "Trinotate {input.sqlite} report "
             "-E {params.evalue} "
             "--pfam_cutoff {params.pfam_cutoff}"
-        "> {output}.tsv "
+        "> {output} "
         "2> {log}"
