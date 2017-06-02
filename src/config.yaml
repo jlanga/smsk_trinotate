@@ -1,6 +1,31 @@
-samples:
-    A: results/raw/samples/A.fastq
-    B: results/raw/samples/B.fastq
+assembly:
+    transcript.fa
 
-urls:
-    tarball: https://bitbucket.org/snakemake/snakemake/downloads/snakemake-tutorial-data.tar.gz
+number_of_chunks: # Please use #chunks < #sequences
+    transdecoder: 1 # Same for blastx and hmmscan
+    trinotate: 1
+    swissprot_blastp: 1
+    uniref90_blastp: 1
+    nrsubset_blastp: 1
+    pfam_hmmscan: 1
+    cog_blastp: 1
+    ncrnas: 1 # same for blastn and cmsearch
+    mirnas_blastn: 1
+    panther: 1 # Careful. Memory hungry: 2-3 Gb per process
+
+prefix:
+    Trinotate
+
+db:
+    swissprot:
+        ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz
+    NOG.annotations:
+        http://eggnogdb.embl.de/download/latest/data/NOG/NOG.annotations.tsv.gz
+    obo:
+        http://purl.obolibrary.org/obo/go/go-basic.obo
+    Pfam-A:
+        ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
+
+trinotate:
+    evalue: 1e-5
+    pfam_cutoff: DNC

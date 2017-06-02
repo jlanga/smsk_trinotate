@@ -2,6 +2,14 @@ dist: trusty
 
 language: bash
 
+#apt_addons:
+
+cache:
+    folders:
+        - data/download/
+        - data/db/
+        - $HOME/miniconda3/
+
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y build-essential curl git
@@ -9,7 +17,7 @@ before_install:
   - bash Miniconda3-latest-Linux-x86_64.sh -b
   - export PATH="/home/travis/miniconda3/bin:$PATH"
 
-script: 
+script:
   - bash src/install/conda_env.sh
-  - source activate smsk
+  - source activate smsk_trinotate
   - snakemake -j
