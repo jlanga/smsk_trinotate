@@ -15,5 +15,3 @@ else
     chmod +x $HOME/download/miniconda.sh
     $HOME/download/miniconda.sh -b
 fi
-
-bash src/install/conda_env.sh
