@@ -2,12 +2,12 @@ rule db_parse_uniprot_sprot:
     input:
         download + "uniprot_sprot.dat.gz"
     output:
-        taxonomy = db + prefix + ".TaxonomyIndex",
-        uniprot = db + prefix + ".UniprotIndex",
+        taxonomy = db + "trinotate.TaxonomyIndex",
+        uniprot = db +  "trinotate.UniprotIndex",
         pep = download + "uniprot_sprot.pep"
     params:
         pep_tmp =  download + "uniprot_sprot.dat.gz.pep",
-        prefix = db + prefix
+        prefix = db + "trinotate"
     log:
         db + "parse_uniprot_sprot.log"
     benchmark:
@@ -20,18 +20,6 @@ rule db_parse_uniprot_sprot:
         "mv {params.pep_tmp} {output.pep}"
 
 
-rule db_create_db:
-    output:
-        db + "{prefix}.sqlite"
-    log:
-        db + "create_db.log"
-    benchmark:
-        db + "create_db.json"
-    shell:
-        "EMBL_dat_to_Trinotate_sqlite_resourceDB.pl "
-            "--sqlite {output} "
-            "--create "
-        "2> {log}"
 
 rule db_obo_to_tab:
     input:
@@ -75,32 +63,6 @@ rule db_parse_pfam:
     shell:
         "PFAM_dat_parser.pl {input} 2> {log}; "
         "mv {params.tmp} {output} 2>> {log}"
-
-
-
-rule db_filled_trinotate_db:
-    input:
-        sqlite = db + prefix + ".sqlite",
-        eggnog = db + "NOG.annotations.tsv.bulk_load",
-        go = db + "go-basic.obo.tab",
-        uniprot_index = db + prefix + ".UniprotIndex",
-        taxonomy_index = db + prefix + ".TaxonomyIndex",
-        pfam = db + "Pfam-A.hmm.gz.pfam_sqlite_bulk_load"
-    output:
-        touch(db + prefix + ".filled")
-    log:
-        db + "load_trinotate_db.log"
-    benchmark:
-        db + "load_trinotate_db.json"
-    shell:
-        "EMBL_dat_to_Trinotate_sqlite_resourceDB.pl "
-            "--sqlite {input.sqlite} "
-            "--eggnog {input.eggnog} "
-            "--go_obo_tab {input.go} "
-            "--uniprot_index {input.uniprot_index} "
-            "--taxonomy_index {input.taxonomy_index} "
-            "--pfam {input.pfam} "
-        "> {log} 2>&1"
 
 
 

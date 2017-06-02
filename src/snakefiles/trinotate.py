@@ -197,14 +197,56 @@ rule trinotate_hmmscan_merge:
         "cat {input} > {output} 2> {log}"
 
 
+rule trinotate_create:
+    output:
+        sqlite = trinotate + "trinotate.sqlite",
+        is_created = touch(trinotate + "create.txt")
+    log:
+        trinotate + "create.log"
+    benchmark:
+        trinotate + "create.json"
+    shell:
+        "EMBL_dat_to_Trinotate_sqlite_resourceDB.pl "
+            "--sqlite {output.sqlite} "
+            "--create "
+        "2> {log}"
+
+
+
+rule trinotate_fill:
+    input:
+        sqlite = trinotate + "trinotate.sqlite",
+        is_created = trinotate + "create.txt",
+        eggnog = db + "NOG.annotations.tsv.bulk_load",
+        go = db + "go-basic.obo.tab",
+        uniprot_index = db + "trinotate.UniprotIndex",
+        taxonomy_index = db + "trinotate.TaxonomyIndex",
+        pfam = db + "Pfam-A.hmm.gz.pfam_sqlite_bulk_load"
+    output:
+        is_filled = touch(trinotate + "fill.txt")
+    log:
+        db + "load_trinotate_db.log"
+    benchmark:
+        db + "load_trinotate_db.json"
+    shell:
+        "EMBL_dat_to_Trinotate_sqlite_resourceDB.pl "
+            "--sqlite {input.sqlite} "
+            "--eggnog {input.eggnog} "
+            "--go_obo_tab {input.go} "
+            "--uniprot_index {input.uniprot_index} "
+            "--taxonomy_index {input.taxonomy_index} "
+            "--pfam {input.pfam} "
+        "> {log} 2>&1"
+
+
 
 rule trinotate_init:
     """
     Initialize db with genes, transcripts and proteins
     """
     input:
-        sqlite = db + prefix + ".sqlite",
-        is_filled = db + prefix + ".filled",
+        sqlite = trinotate + "trinotate.sqlite",
+        is_copied = trinotate + "fill.txt",
         g2t = raw + "gene_to_trans_map.tsv",
         assembly = raw + "assembly.fasta",
         proteome = transdecoder + "transdecoder.pep"
@@ -224,7 +266,7 @@ rule trinotate_init:
 
 rule trinotate_load:
     input:
-        sqlite = db + prefix + ".sqlite",
+        sqlite = trinotate + "trinotate.sqlite",
         is_initialized = trinotate + "init.txt",
         blastx = trinotate + "blastx.tsv",
         blastp = trinotate + "blastp.tsv",
@@ -247,7 +289,7 @@ rule trinotate_load:
 
 rule trinotate_report:
     input:
-        sqlite = db + prefix + ".sqlite",
+        sqlite = trinotate + "trinotate.sqlite",
         is_loaded = trinotate + "load.txt"
     output:
         trinotate + "trinotate.tsv"

@@ -1,8 +1,6 @@
 shell.prefix("set -euo pipefail;")
 configfile: "src/config.yaml"
 
-prefix = config["prefix"]
-
 snakefiles = "src/snakefiles/"
 
 include: snakefiles + "generic.py"
