@@ -12,7 +12,6 @@ cache:
     directories:
         - $HOME/download/
         - $HOME/data/download/
-        - $HOME/data/db/
         - $HOME/miniconda3/
 
 before_install:
