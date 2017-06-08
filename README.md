@@ -1,4 +1,4 @@
-# smsk: A Snakemake skeleton to jumpstart projects
+# smsk_trinotate: A Snakemake workflow to anotate a transcriptome
 
 [![Build Status](https://travis-ci.org/jlanga/smsk_trinotate.svg?branch=master)](https://travis-ci.org/jlanga/smsk_trinotate)
 
