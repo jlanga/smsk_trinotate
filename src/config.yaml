@@ -4,17 +4,6 @@ assembly:
 number_of_chunks: # Please use #chunks < #sequences
     transdecoder: 1 # Same for blastx and hmmscan
     trinotate: 1
-    swissprot_blastp: 1
-    uniref90_blastp: 1
-    nrsubset_blastp: 1
-    pfam_hmmscan: 1
-    cog_blastp: 1
-    ncrnas: 1 # same for blastn and cmsearch
-    mirnas_blastn: 1
-    panther: 1 # Careful. Memory hungry: 2-3 Gb per process
-
-prefix:
-    Trinotate
 
 db:
     swissprot:
