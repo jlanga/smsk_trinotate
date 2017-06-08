@@ -1,150 +1,88 @@
 # smsk: A Snakemake skeleton to jumpstart projects
 
-[![Build Status](https://travis-ci.org/jlanga/smsk.svg?branch=master)](https://travis-ci.org/jlanga/smsk)
+[![Build Status](https://travis-ci.org/jlanga/smsk_trinotate.svg?branch=master)](https://travis-ci.org/jlanga/smsk_trinotate)
 
 ## 1. Description
 
-This is a small skeleton to create Snakemake workflows. [Snakemake](https://bitbucket.org/snakemake/snakemake/wiki/Home) "is a workflow management system that aims to reduce the complexity of creating workflows by providing a fast and comfortable execution environment, together with a clean and modern specification language in python style."
-
-The idea is to create a workflow with of snakefiles, resolve dependencies with `conda`, `pip`, tarballs, and if there is no other option, `docker`.
+This is a workflow based on [smsk](https://github.com/jlanga/smsk) to perform the [Transdecoder](https://transdecoder.github.io/)/[Trinotate](https://trinotate.github.io/) workflow automaticaly.
 
 ## 2. First steps
 
 Follow the contents of the `.travis.yml` file:
+bash .travis/travis_before_install.sh
+  - export PATH="/home/travis/miniconda3/bin:$PATH"
 
-0. Install (ana|mini)conda
+install:
+  - bash src/install/conda_env.sh
 
-- [Anaconda](https://www.continuum.io/downloads)
+script:
+  - source activate smsk_trinotate
+  - travis_wait 30 snakemake -j
+1. Clone this repo
 
-- [miniconda](http://conda.pydata.org/miniconda.html)
+    ```sh
+    git clone https://github.com/jlanga/smsk_trinotate
+    cd smsk_trinotate
+    ```
 
-1. Installation
+2. (Optional) Install miniconda and export it to your path
+    
+    ```sh
+    bash .travis/travis_before_install.sh
+    export PATH="$HOME/miniconda3/bin:$PATH"
+    ```
 
+3. Install requirements
     ```sh
-    git clone https://github.com/jlanga/smsk.git smsk 
-    cd smsk
-    bash src/install/conda_env.sh  # Dowload packages and create an environment
+    bash src/install/conda_env.sh
     ```
 
-2. Activate the environment (`source deactivate` to deactivate):
-    ```sh
-    source activate smsk
-    ```
+4. Activate the environment:
 
-3. Execute the pipeline:
+    ```sh
+    source activate smsk_trinotate
+    ```
+
+4. Execute the pipeline with test data:
 
     ```sh
     snakemake -j
     ```
 
+## 3. Analyzing your data
+
+Just paste the path of your transcriptome assembly in the second line (`transcript.fa`)
+
+Also, to increase the speed of the analysis, set the number of chunks to process to 100. To accelerate the blastp, blastx and pfam analysis, the transcriptome and proteome will be split into that number of chunks. This takes advantage of cluster analysis and also the way that blast and hmmscan paralelize.
 
 
 ## 3. File organization
 
 The hierarchy of the folder is the one described in [Good enough practices in scientific computing](https://swcarpentry.github.io/good-enough-practices-in-scientific-computing/):
 
+The report you want will be in  `results/trinotate/trinotate.tsv`
+
 ```
 smsk
 ├── bin: external scripts/binaries
 ├── data: raw data or links to backup data.
+    ├── download: downloaded files required for trinotate and transdecoder
+    └── db: processed databases for blast and hmmscan
 ├── doc: documentation.
 ├── README.md
 ├── results: processed data.
+    ├── raw: links and auxiliary files
+    ├── transdecoder: predicted cds and protein sequences, results from blast and hmmscan
+    └── trinotate: final report, sqlite database, blastx, blastp and hmmscan results.
 ├── Snakefile: driver script of the project. Mostly links to src/snakefiles.
 └── src: project's source code, config.yaml, snakefiles tarballs, etc.
 ```
 
 
 
-## 4. Writting workflow considerations
+## 4. Notes
 
-- The workflow should be written in the main `Snakefile` and all the subworkflows in `src/snakefiles`.
-
-- Split into different snakefiles as much as possible. This way code supervision is more bearable and you can recycle them for other projects.
-
-- Start each rule name with the name of the subworkflow (`map`), and mark that it is executed over a item (`_sample`): `map_bowtie_sample`, `map_sort_sample`, `map_index_sample`.
-
-- Use a snakefile to store all the folder names instead of typing them explicitelly (`bin/snakefiles/folders`), and using variables with the convention `SUBWORKFLOW_NAME`: `map_bwa_sample`, `map_sort_sample`, etc.
-
-- End a workflow with a checkpoint rule: a rule that takes as input the result of the workflow (`map`). Use the subworkflow name as a folder name to store its results: `map` results go into `results/map/`.
-
-- Log everything. Store it next to the results: `rule/rest_of_rule_name_sample.log`. Store also benchmarks in JSON format. Consider even creating a subfolder if the total number of files is too high.
-
-- End it also with a clean rule that deletes everything of the workflow (`clean_map`).
-
-- Use the `bin/snakefiles/raw` to get/link your raw data, databases, etcetera. You should be careful when cleaning this folder.
-
-- Configuration for software, samples, etcetera, should be written in the `config.yaml` (instead of hardcoding them somewhere in a 1000 line script). Command line software usually comes with mandatory parameters and optional ones. Ideally, write the mandatory ones in each snakefile and the optional in `config.yaml`.
-
-- `shell.prefix("set -euo pipefail;")` in the first line of the Snakefile makes the entire workflow to stop in case of even a warning or a exit error different of 0. Maybe non necessary anymore (2016/12/13).
-
-- If compressing, use `pigz`, `pbzip2` or `pxz` instead of `gzip`. Get them from `conda`.
-
-- Install as many possible packages from `conda` and `pip` instead of using `apt`/`apt-get`: software is more recent, and you don't have to unzip tarballs or rely on your sysadmin. This way your workflow is more reproducible. The problem I see with `brew` is that you cannot specify an exact version.
-
-- To install software from tarballs, download them into `src/` and copy binaries to `bin/` (and write the steps in `bin/install/from_tarball.sh`):
-
-    ```sh
-    # Binaries are already compiled
-    wget \
-        --continue \
-        --output-document src/bin1.tar.gz \
-        http://bin1.com/bin1.tar.gz
-    tar xvf src/bin1.tar.gz
-    cp src/bin1/bin1 bin/ # or link
-
-    # Tarball contains the source
-    wget \
-        --continue \
-        --output-document src/bin2.tar.gz \
-        http://bin2.com/bin2.tar.gz
-    tar xvf src/bin2.tar.gz
-    pushd src/bin2/
-    make -j
-    cp build/bin2 ../../bin/
-    ```
-
-- Use as much as possible `temp()` and `protected()` so you save space and also protect yourself from deleting everything.
-
-- Pipe and compress as much as possible. Make use of the [process substitution](http://vincebuffalo.org/blog/2013/08/08/using-names-pipes-and-process-substitution-in-bioinformatics.html) feature in `bash`: `cmd <(gzip -dc fa.gz)` and `cmd >(gzip -9 > file.gz)`. The problem is that it is hard to estimate the CPU usage of each step of the workflow.
-
-- End each subworkflow with a report for your own sanity. Or write the rules in `bin/snakefiles/report`
-
-- Use in command line applications long flags (`wget --continue $URL`): this way it is more readable. The computer does not care and is not going to work slower.
-
-- If software installation is too complex, consider pulling a docker image.
-
-
-## 5. Considerations when installing software
-
-As a rule of thumb, download python packages with `conda`, use `pip` whenever possible, download binary tarballs into `src/` and copy them to `bin/` or download the source tarball and compile it. Example:
-
-   ```
-   conda install \
-       samtools
-   
-   pip install \
-       snakemake
-
-   wget \
-       --continue \
-       --output-document src/bin1.tar.gz \
-       http://bin1.com/bin1.tar.gz
-   tar xvf src/bin1.tar.gz
-   cp src/bin1/bin1 bin/  # or link
-
-   wget \
-       --continue \
-       --output-document src/bin2.tar.gz \
-       http://bin2.com/bin2.tar.gz
-   tar xvf src/bin2.tar.gz
-   pushd src/bin2/
-   make -j
-   cp build/bin2 ../../bin/
-   ```
+- Because RNAMMER, TmHMM and SignalP require a registrations, I do not provide rules to perform those analyses.
 
 ## Bibliography
 
-- [A Quick Guide to Organizing Computational Biology Projects](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1000424)
-
-- [Snakemake—a scalable bioinformatics workflow engine](http://bioinformatics.oxfordjournals.org/content/28/19/2520)
