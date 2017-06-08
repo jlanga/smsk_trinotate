@@ -10,7 +10,6 @@ addons:
 
 cache:
     directories:
-        - $HOME/download/
         - $HOME/data/download/
         - $HOME/miniconda3/
 
