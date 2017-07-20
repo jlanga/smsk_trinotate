@@ -26,7 +26,7 @@ script:
     ```
 
 2. (Optional) Install miniconda and export it to your path
-    
+
     ```sh
     bash .travis/travis_before_install.sh
     export PATH="$HOME/miniconda3/bin:$PATH"
@@ -56,7 +56,7 @@ Just paste the path of your transcriptome assembly in the second line (`transcri
 Also, to increase the speed of the analysis, set the number of chunks to process to 100. To accelerate the blastp, blastx and pfam analysis, the transcriptome and proteome will be split into that number of chunks. This takes advantage of cluster analysis and also the way that blast and hmmscan paralelize.
 
 
-## 3. File organization
+## 4. File organization
 
 The hierarchy of the folder is the one described in [Good enough practices in scientific computing](https://swcarpentry.github.io/good-enough-practices-in-scientific-computing/):
 
@@ -80,9 +80,10 @@ smsk
 
 
 
-## 4. Notes
+## 5. Notes
 
 - Because RNAMMER, TmHMM and SignalP require a registrations, I do not provide rules to perform those analyses.
 
-## Bibliography
+__Update__ (2017-07-20): Rules for Rnammer, TmHMM and SignalP are provided but commented in the snakefiles. To run those analysis, uncomment rules `trinotate_signalp`, `trinotate_rnammer`, and `trinotate_tmhmm`, and uncomment also the blocks in the rule `trinotate_load` from file `src/snakefiles/trinotate.py`. Finally, modify the `config.yaml` file with the path to the `rnammer` executable.
 
+## Bibliography
