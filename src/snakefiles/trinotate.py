@@ -233,8 +233,8 @@ rule trinotate_hmmscan_merge:
 #     shell:
 #         "tmhmm "
 #             "--short "
-#         "< transdecoder.pep "
-#         "> tmhmm.out "
+#         "< {input.pep} "
+#         "> {output.tsv} "
 #         "2> {log}"
 #
 #
@@ -246,7 +246,7 @@ rule trinotate_hmmscan_merge:
 #     input:
 #         assembly = raw + "assembly.fasta",
 #     output:
-#         tsv = trinotate + "rnammer.tsv"
+#         "assembly.fasta.rnammer.gff"
 #     params:
 #         rnammer_path = config["trinotate"]["rnammer"]["rnammer_path"],
 #         org_type = config["trinotate"]["rnammer"]["org_type"]
@@ -342,7 +342,7 @@ rule trinotate_load:
         pfam = trinotate + "hmmscan.tsv",
         # signalp = trinotate + "signalp.tsv",
         # tmhmm = trinotate + "tmhmm.tsv",
-        # rnammer = trinotate + "rnammer.tsv",
+        # rnammer = "assembly.fasta.rnammer.gff",
     output:
         touch(trinotate + "load.txt")
     log:
