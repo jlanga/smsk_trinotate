@@ -249,6 +249,7 @@ rule trinotate_hmmscan_merge:
 #         assembly = raw + "assembly.fasta",
 #     output:
 #         gff = trinotate + "rnammer.gff"
+#         "assembly.fasta.rnammer.gff"
 #     params:
 #         rnammer_path = config["trinotate"]["rnammer"]["rnammer_path"],
 #         org_type = config["trinotate"]["rnammer"]["org_type"],
