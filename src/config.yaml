@@ -19,5 +19,5 @@ trinotate:
     evalue: 1e-5
     pfam_cutoff: DNC
     rnammer:
-        rnammer_path: /usr/bin/software/rnammer_v1.2/rnammer  # Modify this
+        rnammer_path: ./src/rnammer-1.2/rnammer  # Modify this
         org_type: euk  # arc|bac|euk
