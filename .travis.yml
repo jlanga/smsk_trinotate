@@ -23,3 +23,4 @@ install:
 script:
   - source activate smsk_trinotate
   - travis_wait 30 snakemake -j
+  - cat results/trinotate/trinotate.tsv
