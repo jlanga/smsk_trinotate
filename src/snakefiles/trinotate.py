@@ -204,20 +204,21 @@ rule trinotate_hmmscan_merge:
 #     input:
 #         pep = transdecoder + "transdecoder.pep"
 #     output:
-#         tsv = trinotate + "signalp.tsv"
+#         tsv = touch(trinotate + "signalp.tsv")
 #     log:
 #         trinotate + "signalp.log"
 #     benchmark:
 #         trinotate + "signalp.json"
 #     shell:
-#         "signalp "
+#         "./src/signalp-4.1/signalp "
 #             "-f short "
 #             "-n {output.tsv} "
 #             "{input.pep} "
-#         "2> {log}"
-#
-#
-#
+#         "2> {log} 1>&2 "
+
+
+
+
 # rule trinotate_tmhmm:
 #     """
 #     Predict transmembrane regions
@@ -231,14 +232,15 @@ rule trinotate_hmmscan_merge:
 #     benchmark:
 #         trinotate + "tmhmm.json"
 #     shell:
-#         "tmhmm "
+#         "./src/tmhmm-2.0c/bin/tmhmm "
 #             "--short "
-#         "< transdecoder.pep "
-#         "> tmhmm.out "
-#         "2> {log}"
-#
-#
-#
+#         "< {input.pep} "
+#         "> {output.tsv} "
+#         "2> {log} && "
+#         "rm -rf TMHMM_*"
+
+
+
 # rule trinotate_rnammer:
 #     """
 #     Identify rRNAs
@@ -246,20 +248,25 @@ rule trinotate_hmmscan_merge:
 #     input:
 #         assembly = raw + "assembly.fasta",
 #     output:
-#         tsv = trinotate + "rnammer.tsv"
+#         gff = trinotate + "rnammer.gff"
 #     params:
 #         rnammer_path = config["trinotate"]["rnammer"]["rnammer_path"],
-#         org_type = config["trinotate"]["rnammer"]["org_type"]
+#         org_type = config["trinotate"]["rnammer"]["org_type"],
+#         gff_tmp = "assembly.fasta.rnammer.gff"
 #     log:
 #         trinotate + "rnammer.log"
 #     benchmark:
 #         trinotate + "rnammer.json"
 #     shell:
-#         "RnammerTranscriptome.pl "
+#         "./src/Trinotate-3.0.2/util/rnammer_support/RnammerTranscriptome.pl "
 #             "--transcriptome {input.assembly} "
-#             "--path_to_rnammer {params.rnammer_path} "
+#             "--path_to_rnammer  ./src/rnammer-1.2/rnammer "
 #             "--org_type {params.org_type} "
-#         "2> {log}"
+#         "2> {log} 1>&2 ; "
+#         "mv {params.gff_tmp} {output.gff} ; "
+#         "rm tmp.superscaff.rnammer.gff "
+#             "transcriptSuperScaffold.bed "
+#             "transcriptSuperScaffold.fasta"
 
 
 
@@ -278,34 +285,7 @@ rule trinotate_create:
         "EMBL_dat_to_Trinotate_sqlite_resourceDB.pl "
             "--sqlite {output.sqlite} "
             "--create "
-        "2> {log}"
-
-
-
-rule trinotate_fill:
-    input:
-        sqlite = trinotate + "trinotate.sqlite",
-        is_created = trinotate + "create.txt",
-        eggnog = db + "NOG.annotations.tsv.bulk_load",
-        go = db + "go-basic.obo.tab",
-        uniprot_index = db + "trinotate.UniprotIndex",
-        taxonomy_index = db + "trinotate.TaxonomyIndex",
-        pfam = db + "Pfam-A.hmm.gz.pfam_sqlite_bulk_load"
-    output:
-        is_filled = touch(trinotate + "fill.txt")
-    log:
-        db + "load_trinotate_db.log"
-    benchmark:
-        db + "load_trinotate_db.json"
-    shell:
-        "EMBL_dat_to_Trinotate_sqlite_resourceDB.pl "
-            "--sqlite {input.sqlite} "
-            "--eggnog {input.eggnog} "
-            "--go_obo_tab {input.go} "
-            "--uniprot_index {input.uniprot_index} "
-            "--taxonomy_index {input.taxonomy_index} "
-            "--pfam {input.pfam} "
-        "> {log} 2>&1"
+        "2> {log} 1>&2"
 
 
 
@@ -315,7 +295,7 @@ rule trinotate_init:
     """
     input:
         sqlite = trinotate + "trinotate.sqlite",
-        is_copied = trinotate + "fill.txt",
+        is_created = trinotate + "create.txt",
         g2t = raw + "gene_to_trans_map.tsv",
         assembly = raw + "assembly.fasta",
         proteome = transdecoder + "transdecoder.pep"
@@ -324,42 +304,71 @@ rule trinotate_init:
     log:
         trinotate + "init.log"
     benchmark:
-        trinotate + "init.josn"
+        trinotate + "init.json"
     shell:
         "Trinotate {input.sqlite} init "
             "--gene_trans_map {input.g2t} "
             "--transcript_fasta {input.assembly} "
             "--transdecoder_pep {input.proteome} "
-        "2> {log}"
+        "2> {log} 1>&2"
+
+
+
+rule trinotate_fill:
+    input:
+        sqlite = trinotate + "trinotate.sqlite",
+        is_init = trinotate + "init.txt",
+        eggnog = db + "NOG.annotations.tsv.bulk_load",
+        go = db + "go-basic.obo.tab",
+        uniprot_index = db + "trinotate.UniprotIndex",
+        taxonomy_index = db + "trinotate.TaxonomyIndex",
+        pfam = db + "Pfam-A.hmm.gz.pfam_sqlite_bulk_load"
+    output:
+        is_filled = touch(trinotate + "fill.txt")
+    log:
+        db + "fill.log"
+    benchmark:
+        db + "fill.json"
+    shell:
+        "EMBL_dat_to_Trinotate_sqlite_resourceDB.pl "
+            "--sqlite {input.sqlite} "
+            "--eggnog {input.eggnog} "
+            "--go_obo_tab {input.go} "
+            "--uniprot_index {input.uniprot_index} "
+            "--taxonomy_index {input.taxonomy_index} "
+            "--pfam {input.pfam} "
+        "2> {log} 1>&2"
+
+
 
 
 rule trinotate_load:
     input:
         sqlite = trinotate + "trinotate.sqlite",
-        is_initialized = trinotate + "init.txt",
+        is_filled = trinotate + "fill.txt",
         blastx = trinotate + "blastx.tsv",
         blastp = trinotate + "blastp.tsv",
         pfam = trinotate + "hmmscan.tsv",
         # signalp = trinotate + "signalp.tsv",
         # tmhmm = trinotate + "tmhmm.tsv",
-        # rnammer = trinotate + "rnammer.tsv",
+        # rnammer = trinotate + "rnammer.gff",
     output:
         touch(trinotate + "load.txt")
     log:
         trinotate + "load.log"
     benchmark:
-        trinotate + "load.log"
+        trinotate + "load.json"
     shell:
         "Trinotate {input.sqlite} "
             "LOAD_swissprot_blastp {input.blastp} 2> {log} 1>&2; "
         "Trinotate {input.sqlite} "
-            "LOAD_swissprot_blastx {input.blastx} 2>> {log} 1>&2; "
-        "Trinotate {input.sqlite} "
             "LOAD_pfam {input.pfam} 2>> {log} 1>&2; "
         # "Trinotate {input.sqlite} "
-        #     "LOAD_signalp {input.signalp} 2>> {log} 1>&2; "
-        # "Trinotate {input.sqlite} "
         #     "LOAD_tmhmm {input.tmhmm} 2>> {log} 1>&2; "
+        # "Trinotate {input.sqlite} "
+        #     "LOAD_signalp {input.signalp} 2>> {log} 1>&2; "
+        "Trinotate {input.sqlite} "
+            "LOAD_swissprot_blastx {input.blastx} 2>> {log} 1>&2; "
         # "Trinotate {input.sqlite} "
         #     "LOAD_rnammer {input.rnammer} 2>> {log} 1>&2; "
 
@@ -382,6 +391,6 @@ rule trinotate_report:
     shell:
         "Trinotate {input.sqlite} report "
             "-E {params.evalue} "
-            "--pfam_cutoff {params.pfam_cutoff}"
+            "--pfam_cutoff {params.pfam_cutoff} "
         "> {output} "
         "2> {log}"

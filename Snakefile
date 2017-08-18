@@ -37,6 +37,6 @@ rule all:
         # transdecoder + "transdecoder.pep.fai"
         # trinotate + "blastx.tsv",
         # trinotate + "blastp.tsv",
-        # trinotate + "hmmscan.tsv"
-        # trinotate + "init.txt"
+        # trinotate + "hmmscan.tsv",
+        # trinotate + "init.txt",
         trinotate + "trinotate.tsv"
