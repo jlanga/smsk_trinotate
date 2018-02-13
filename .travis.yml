@@ -28,7 +28,3 @@ script:
   - echo $PATH
   - source activate smsk_trinotate
   - snakemake -j
-
-after_script:
-  - snakemake --clean
-  - conda clean --all --yes
