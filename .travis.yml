@@ -9,6 +9,7 @@ addons:
         - curl
 
 cache:
+    apt: true
     directories:
         - $HOME/miniconda3_$TRAVIS_OS_NAME/
     timeout: 1000
