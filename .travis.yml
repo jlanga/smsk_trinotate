@@ -11,6 +11,7 @@ addons:
 cache:
     directories:
         - $HOME/miniconda3_$TRAVIS_OS_NAME/
+    timeout: 1000
 
 before_install:
   - bash .travis/travis_before_install.sh
@@ -26,3 +27,7 @@ script:
   - echo $PATH
   - source activate smsk_trinotate
   - snakemake -j
+
+after_script:
+  - snakemake --clean
+  - conda clean --all --yes
