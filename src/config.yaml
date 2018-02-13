@@ -2,8 +2,8 @@ assembly:
     transcript.fa
 
 number_of_chunks: # Please use #chunks < #sequences
-    transdecoder: 1 # Same for blastx and hmmscan
-    trinotate: 1
+    transdecoder: 2 # Same for blastx and hmmscan
+    trinotate: 2
 
 db:
     swissprot:
