@@ -1,9 +1,0 @@
-# This file may be used to create an environment using:
-# $ conda create --name snakemake-tutorial -c bioconda --file <this file>
-python=3.6
-graphviz
-snakemake
-pyyaml
-trinotate
-trinity
-transdecoder
