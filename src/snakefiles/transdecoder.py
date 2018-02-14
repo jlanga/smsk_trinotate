@@ -165,6 +165,7 @@ rule transdecoder_predict:
         cds  = "assembly.fasta.transdecoder.cds",
         gff3 = "assembly.fasta.transdecoder.gff3",
         pep  = "assembly.fasta.transdecoder.pep",
+        checkpoints = "assembly.fasta.transdecoder_dir.__checkpoints"
     threads:
         24
     log:
@@ -182,4 +183,4 @@ rule transdecoder_predict:
         "mv {params.cds} {output.cds} 2>> {log} 1>&2; "
         "mv {params.gff3} {output.gff3} 2>> {log} 1>&2; "
         "mv {params.pep} {output.pep} 2>> {log} 1>&2; "
-        "rm -rf {params.dir} 2>> {log} 1>&2"
+        "rm -rf {params.dir} {params.checkpoints} 2>> {log} 1>&2"
