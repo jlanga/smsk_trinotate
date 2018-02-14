@@ -1,3 +1,8 @@
+## 2018-02-14
+
+* Updated TransDecoder to 5.0.2
+* Updated smsk and travis-ci way of working
+
 ## 2017-05-02
 
 * Renamed snakefiles to .py (to make things easier for text editors)
