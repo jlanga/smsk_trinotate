@@ -26,5 +26,4 @@ install:
 script:
   - export PATH="$HOME/miniconda3_$TRAVIS_OS_NAME/bin:$PATH"
   - echo $PATH
-  - source activate smsk_trinotate
-  - snakemake -j
+  - snakemake --use-conda -j
