@@ -12,6 +12,8 @@ rule db_parse_uniprot_sprot:
         db + "parse_uniprot_sprot.log"
     benchmark:
         db + "parse_uniprot_sprot.josn"
+    conda:
+        "db.yml"
     shell:
         "EMBL_swissprot_parser.pl {input} {params.prefix} "
         "2> {log}; "
@@ -27,6 +29,8 @@ rule db_obo_to_tab:
         db + "obo_to_tab.log"
     benchmark:
         db + "obo_to_tab.json"
+    conda:
+        "db.yml"
     shell:
         "obo_to_tab.pl {input} > {output} 2> {log}"
 
@@ -40,6 +44,8 @@ rule db_parse_nog:
         db + "parse_nog.log"
     benchmark:
         db + "parse_nog.json"
+    conda:
+        "db.yml"
     shell:
         "(gzip -dc {input} "
         "| print.pl 1 5 "
@@ -57,6 +63,8 @@ rule db_parse_pfam:
         db + "parse_pfam.log"
     benchmark:
         db + "parse_pfam.json"
+    conda:
+        "db.yml"
     shell:
         "PFAM_dat_parser.pl {input} 2> {log}; "
         "mv {params.tmp} {output} 2>> {log}"
@@ -78,6 +86,8 @@ rule db_hmmpress_pfama:
         db + "hmmpress_pfama.log"
     benchmark:
         db + "hmmpress_pfama.json"
+    conda:
+        "db.yml"
     shell:
         "gzip --decompress --keep --stdout {input.hmm_gz} "
         "> {output.hmm} 2> {log}; "
@@ -98,6 +108,8 @@ rule db_makeblastdb_uniprot_sprot:
         db + "makeblastdb_uniprot_sprot.log"
     benchmark:
         db + "makeblastdb_uniprot_sprot.json"
+    conda:
+        "db.yml"
     shell:
         "makeblastdb "
             "-dbtype prot "

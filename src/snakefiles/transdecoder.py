@@ -14,6 +14,8 @@ rule transdecoder_longorfs:
         transdecoder + "longorfs.log"
     benchmark:
         transdecoder + "longorfs.json"
+    conda:
+        "transdecoder.yml"
     shell:
         "TransDecoder.LongOrfs "
             "-t {input.fasta} "
@@ -39,6 +41,8 @@ rule transdecoder_split_longest_orfs:
         transdecoder + "split_longest_orfs.log"
     benchmark:
         transdecoder + "split_longest_orfs.json"
+    conda:
+        "transdecoder.yml"
     shell:
         "split "
             "--number l/{params.number_of_chunks} "
@@ -66,6 +70,8 @@ rule transdecoder_hmmscan_chunk:
         transdecoder + "hmmscan/longest_orfs_{chunk_id}.log"
     benchmark:
         transdecoder + "hmmscan/longest_orfs_{chunk_id}.json"
+    conda:
+        "transdecoder.yml"
     shell:
         "cut -f 1 {input.chunk} "
         "| xargs samtools faidx {input.pep} "
@@ -92,6 +98,8 @@ rule transdecoder_hmmscan_merge:
         transdecoder + "hmmscan_merge.log"
     benchmark:
         transdecoder + "hmmscan_merge.json"
+    conda:
+        "transdecoder.yml"
     shell:
         "cat {input} > {output} 2> {log}"
 
@@ -112,6 +120,8 @@ rule transdecoder_blastp_chunk:
         transdecoder + "blastp/longest_orfs_{chunk_id}.log"
     benchmark:
         transdecoder + "blastp/longest_orfs_{chunk_id}.json"
+    conda:
+        "transdecoder.yml"
     shell:
         "cut -f 1 {input.chunk} "
         "| xargs samtools faidx {input.pep} "
@@ -140,6 +150,8 @@ rule transdecoder_blastp_merge:
         transdecoder + "blastp_merge.log"
     benchmark:
         transdecoder + "blastp_merge.json"
+    conda:
+        "transdecoder.yml"
     shell:
         "cat {input} > {output} 2> {log}"
 
@@ -172,6 +184,8 @@ rule transdecoder_predict:
         transdecoder + "predict.log"
     benchmark:
         transdecoder + "predict.json"
+    conda:
+        "transdecoder.yml"
     shell:
         "TransDecoder.Predict "
             "-t {input.fasta} "

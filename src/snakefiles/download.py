@@ -7,6 +7,8 @@ rule download_uniprot_sprot:
         download + "uniprot_sprot.log"
     benchmark:
         download + "uniprot_sprot.json"
+    conda:
+        "download.yml"
     shell:
         "wget "
             "--continue "
@@ -23,6 +25,8 @@ rule download_nog_annotations:
         download + "NOG.annotations.log"
     benchmark:
         download + "NOG.annotations.json"
+    conda:
+        "download.yml"
     shell:
         "wget "
             "--continue "
@@ -39,6 +43,8 @@ rule download_obo:
         download + "obo.log"
     benchmark:
         download + "obo.json"
+    conda:
+        "download.yml"
     shell:
         "wget "
             "--continue "
@@ -57,6 +63,8 @@ rule download_pfama:
         download + "pfama.log"
     benchmark:
         download + "pfama.json"
+    conda:
+        "download.yml"
     shell:
         "wget "
             "--continue "

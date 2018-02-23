@@ -1,0 +1,7 @@
+channels:
+  - bioconda
+  - r
+  - defaults
+  - conda-forge
+dependencies:
+- trinity=2.4.0=5

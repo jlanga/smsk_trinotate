@@ -15,6 +15,8 @@ rule trinotate_split_assembly:
         trinotate + "split_assembly.log"
     benchmark:
         trinotate + "split_assembly.json"
+    conda:
+        "trinotate.yml"
     shell:
         "split "
             "--number l/{params.number_of_chunks} "
@@ -42,6 +44,8 @@ rule trinotate_blastx_chunk:
         trinotate + "blastx/assembly_{chunk_id}.log"
     benchmark:
         trinotate + "blastx/assembly_{chunk_id}.json"
+    conda:
+        "trinotate.yml"
     shell:
         "cut -f 1 {input.chunk} "
         "| xargs samtools faidx {input.fa} "
@@ -70,6 +74,8 @@ rule trinotate_blastx_merge:
         trinotate + "blastx_merge.log"
     benchmark:
         trinotate + "blastx_merge.json"
+    conda:
+        "trinotate.yml"
     shell:
         "cat {input} > {output} 2> {log}"
 
@@ -92,6 +98,8 @@ rule trinotate_split_proteome:
         trinotate + "split_proteome.log"
     benchmark:
         trinotate + "split_proteome.json"
+    conda:
+        "trinotate.yml"
     shell:
         "split "
             "--number l/{params.number_of_chunks} "
@@ -119,6 +127,8 @@ rule trinotate_blastp_chunk:
         trinotate + "blastp/proteome_{chunk_id}.log"
     benchmark:
         trinotate + "blastp/proteome_{chunk_id}.json"
+    conda:
+        "trinotate.yml"
     shell:
         "cut -f 1 {input.chunk} "
         "| xargs samtools faidx {input.pep} "
@@ -147,6 +157,8 @@ rule trinotate_blastp_merge:
         trinotate + "blastp_merge.log"
     benchmark:
         trinotate + "blastp_merge.json"
+    conda:
+        "trinotate.yml"
     shell:
         "cat {input} > {output} 2> {log}"
 
@@ -167,6 +179,8 @@ rule trinotate_hmmscan_chunk:
         trinotate + "hmmscan/proteome_{chunk_id}.log"
     benchmark:
         trinotate + "hmmscan/proteome_{chunk_id}.json"
+    conda:
+        "trinotate.yml"
     shell:
         "cut -f 1 {input.chunk} "
         "| xargs samtools faidx {input.pep} "
@@ -193,6 +207,8 @@ rule trinotate_hmmscan_merge:
         trinotate + "hmmscan_merge.log"
     benchmark:
         trinotate + "hmmscan_merge.json"
+    conda:
+        "trinotate.yml"
     shell:
         "cat {input} > {output} 2> {log}"
 
@@ -209,6 +225,8 @@ rule trinotate_hmmscan_merge:
 #         trinotate + "signalp.log"
 #     benchmark:
 #         trinotate + "signalp.json"
+    # conda:
+    #     "trinotate.yml"
 #     shell:
 #         "./src/signalp-4.1/signalp "
 #             "-f short "
@@ -231,6 +249,8 @@ rule trinotate_hmmscan_merge:
 #         trinotate + "tmhmm.log"
 #     benchmark:
 #         trinotate + "tmhmm.json"
+#     conda:
+#         "trinotate.yml"
 #     shell:
 #         "./src/tmhmm-2.0c/bin/tmhmm "
 #             "--short "
@@ -258,6 +278,8 @@ rule trinotate_hmmscan_merge:
 #         trinotate + "rnammer.log"
 #     benchmark:
 #         trinotate + "rnammer.json"
+#     conda:
+#         "trinotate.yml"
 #     shell:
 #         "./src/Trinotate-3.0.2/util/rnammer_support/RnammerTranscriptome.pl "
 #             "--transcriptome {input.assembly} "
@@ -282,6 +304,8 @@ rule trinotate_create:
         trinotate + "create.log"
     benchmark:
         trinotate + "create.json"
+    conda:
+        "trinotate.yml"
     shell:
         "EMBL_dat_to_Trinotate_sqlite_resourceDB.pl "
             "--sqlite {output.sqlite} "
@@ -306,6 +330,8 @@ rule trinotate_init:
         trinotate + "init.log"
     benchmark:
         trinotate + "init.json"
+    conda:
+        "trinotate.yml"
     shell:
         "Trinotate {input.sqlite} init "
             "--gene_trans_map {input.g2t} "
@@ -330,6 +356,8 @@ rule trinotate_fill:
         db + "fill.log"
     benchmark:
         db + "fill.json"
+    conda:
+        "trinotate.yml"
     shell:
         "EMBL_dat_to_Trinotate_sqlite_resourceDB.pl "
             "--sqlite {input.sqlite} "
@@ -359,6 +387,8 @@ rule trinotate_load:
         trinotate + "load.log"
     benchmark:
         trinotate + "load.json"
+    conda:
+        "trinotate.yml"
     shell:
         "Trinotate {input.sqlite} "
             "LOAD_swissprot_blastp {input.blastp} 2> {log} 1>&2; "
@@ -389,6 +419,8 @@ rule trinotate_report:
         trinotate + "report.log"
     benchmark:
         trinotate + "report.json"
+    conda:
+        "trinotate.yml"
     shell:
         "Trinotate {input.sqlite} report "
             "-E {params.evalue} "
