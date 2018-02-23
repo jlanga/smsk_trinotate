@@ -26,7 +26,6 @@ install:
 script:
   - export PATH="$HOME/miniconda3_$TRAVIS_OS_NAME/bin:$PATH"
   - echo $PATH
-  - snakemake clean
   - snakemake --use-conda --create-envs-only
   - conda clean --all --yes
   - snakemake --use-conda -j 1
