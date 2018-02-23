@@ -24,7 +24,7 @@ install:
   - bash .travis/travis_install.sh
 
 script:
-  - export PATH="$HOME/miniconda3_$TRAVIS_OS_NAME/bin:$PATH"docker pull travisci/ci-garnet
+  - export PATH="$HOME/miniconda3_$TRAVIS_OS_NAME/bin:$PATH"
   - echo $PATH
   - snakemake --use-conda -j 1
 
