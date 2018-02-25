@@ -91,7 +91,8 @@ rule db_hmmpress_pfama:
     shell:
         "gzip --decompress --keep --stdout {input.hmm_gz} "
         "> {output.hmm} 2> {log}; "
-        "hmmpress {output.hmm} 2>> {log} 1>&2"
+        "hmmpress {output.hmm} 2>> {log} 1>&2; "
+        "cat /dev/null > {output.hmm} 2>> {log} 1>&2"
 
 
 rule db_makeblastdb_uniprot_sprot:
