@@ -26,10 +26,7 @@ install:
 script:
   - export PATH="$HOME/miniconda3_$TRAVIS_OS_NAME/bin:$PATH"
   - echo $PATH
-  - snakemake --use-conda --create-envs-only --conda-prefix "$HOME/miniconda3_$TRAVIS_OS_NAME/envs/"
-  - conda clean --all --yes
-  - snakemake --use-conda --conda-prefix "$HOME/miniconda3_$TRAVIS_OS_NAME/envs/" --jobs 1
-
+  - snakemake -j
 
 after_failure:
     - cat data/db/hmmpress_pfama.log
