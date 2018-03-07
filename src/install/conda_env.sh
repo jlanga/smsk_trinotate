@@ -7,5 +7,5 @@ conda config --add channels defaults
 conda config --add channels conda-forge
 conda config --add channels bioconda
 conda install --yes -c bioconda "snakemake=4.7.0"
-conda install --file .travis/packages.yml
+conda install --yes --file .travis/packages.yml
 conda clean --all --yes
