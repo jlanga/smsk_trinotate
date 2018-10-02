@@ -6,6 +6,5 @@ export PATH="$HOME/miniconda3_$TRAVIS_OS_NAME/bin:$PATH"
 conda config --add channels defaults
 conda config --add channels conda-forge
 conda config --add channels bioconda
-conda install --yes -c bioconda "snakemake=4.7.0"
-conda install --yes --file .travis/packages.yml
+conda install --yes -c bioconda snakemake pandas yaml
 conda clean --all --yes
