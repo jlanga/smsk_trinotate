@@ -6,9 +6,11 @@ rule raw_link_assembly:
     conda:
         "raw.yml"
     shell:
-        "ln --symbolic "
-            "$(readlink -f {input}) "
-            "{output}"
+        """
+        ln --symbolic \
+            $(readlink --canonicalize {input}) \
+            {output}
+        """
 
 
 rule raw_gene_to_trans_map:
@@ -23,7 +25,9 @@ rule raw_gene_to_trans_map:
     conda:
         "raw.yml"
     shell:
-        "get_Trinity_gene_to_trans_map.pl "
-            "< {input.fasta} "
-            "> {output.tsv} "
-        "2> {log}"
+        """
+        get_Trinity_gene_to_trans_map.pl \
+            < {input.fasta} \
+            > {output.tsv} \
+        2> {log}
+        """

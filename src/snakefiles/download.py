@@ -10,11 +10,14 @@ rule download_uniprot_sprot:
     conda:
         "download.yml"
     shell:
-        "wget "
-            "--continue "
-            "--output-document {output} "
-            "{params.url} "
-        "2> {log}"
+        """
+        wget \
+            --continue \
+            --output-document {output} \
+            {params.url} \
+        2> {log}
+        """
+
 
 rule download_nog_annotations:
     output:
@@ -28,11 +31,14 @@ rule download_nog_annotations:
     conda:
         "download.yml"
     shell:
-        "wget "
-            "--continue "
-            "--output-document {output} "
-            "{params.url} "
-        "2> {log}"
+        """
+        wget \
+            --continue \
+            --output-document {output} \
+            {params.url} \
+        2> {log}
+        """
+
 
 rule download_obo:
     output:
@@ -46,12 +52,13 @@ rule download_obo:
     conda:
         "download.yml"
     shell:
-        "wget "
-            "--continue "
-            "--output-document {output} "
-            "{params.url} "
-        "2> {log}"
-
+        """
+        wget \
+            --continue \
+            --output-document {output} \
+            {params.url} \
+        2> {log}
+        """
 
 
 rule download_pfama:
@@ -66,8 +73,10 @@ rule download_pfama:
     conda:
         "download.yml"
     shell:
-        "wget "
-            "--continue "
-            "--output-document {output} "
-            "{params.url} "
-        "2> {log}"
+        """
+        wget \
+            --continue \
+            --output-document {output} \
+            {params.url} \
+        2> {log}
+        """
