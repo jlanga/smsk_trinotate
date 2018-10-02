@@ -319,7 +319,7 @@ rule trinotate_init:
     Initialize db with genes, transcripts and proteins
     """
     input:
-        sqlite = trinotate + "trinotate.sqlite",
+        sqlite = ancient(trinotate + "trinotate.sqlite"),
         is_created = trinotate + "create.txt",
         g2t = raw + "gene_to_trans_map.tsv",
         assembly = raw + "assembly.fasta",
@@ -343,7 +343,7 @@ rule trinotate_init:
 
 rule trinotate_fill:
     input:
-        sqlite = trinotate + "trinotate.sqlite",
+        sqlite = ancient(trinotate + "trinotate.sqlite"),
         is_init = trinotate + "init.txt",
         eggnog = db + "NOG.annotations.tsv.bulk_load",
         go = db + "go-basic.obo.tab",
@@ -373,7 +373,7 @@ rule trinotate_fill:
 
 rule trinotate_load:
     input:
-        sqlite = trinotate + "trinotate.sqlite",
+        sqlite = ancient(trinotate + "trinotate.sqlite"),
         is_filled = trinotate + "fill.txt",
         blastx = trinotate + "blastx.tsv",
         blastp = trinotate + "blastp.tsv",
@@ -408,7 +408,7 @@ rule trinotate_load:
 
 rule trinotate_report:
     input:
-        sqlite = trinotate + "trinotate.sqlite",
+        sqlite = ancient(trinotate + "trinotate.sqlite"),
         is_loaded = trinotate + "load.txt"
     output:
         trinotate + "trinotate.tsv"
