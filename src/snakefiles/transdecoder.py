@@ -9,10 +9,7 @@ rule transdecoder_longorfs:
         fasta = raw + "assembly.fasta",
         tsv = raw + "gene_to_trans_map.tsv"
     output:
-        "assembly.fasta.transdecoder_dir/longest_orfs.pep",
-        temp(
-            "assembly.fasta.transdecoder_dir/"
-        )
+        "assembly.fasta.transdecoder_dir/longest_orfs.pep"
     log:
         transdecoder + "longorfs.log"
     benchmark:
@@ -178,8 +175,7 @@ rule transdecoder_predict:
     input:
         fasta = raw + "assembly.fasta",
         pfam_tsv = transdecoder + "hmmscan.tsv",
-        blastp_tsv = transdecoder + "blastp.tsv",
-        folder = "assembly.fasta.transdecoder_dir/"
+        blastp_tsv = transdecoder + "blastp.tsv"
     output:
         bed = transdecoder + "transdecoder.bed",
         cds = transdecoder + "transdecoder.cds",
