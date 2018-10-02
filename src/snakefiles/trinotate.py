@@ -1,3 +1,5 @@
+CHUNKS_ANNOTATE = params["chunks"]["trinotate"]
+
 rule trinotate_split_assembly:
     """
     Split the headers from assembly into multiple files
@@ -9,11 +11,11 @@ rule trinotate_split_assembly:
             trinotate + "chunks/assembly_{chunk_id}.tsv",
             chunk_id=[
                 '{0:05d}'.format(x)
-                for x in range(0, config["number_of_chunks"]["trinotate"])
+                for x in range(0, CHUNKS_ANNOTATE)
             ]
         )
     params:
-        number_of_chunks = config["number_of_chunks"]["trinotate"]
+        number_of_chunks = CHUNKS_ANNOTATE
     log:
         trinotate + "split_assembly.log"
     benchmark:
@@ -73,7 +75,7 @@ rule trinotate_blastx_merge:
             trinotate + "blastx/assembly_{chunk_id}.tsv",
             chunk_id=[
                 '{0:05d}'.format(x)
-                for x in range(0, config["number_of_chunks"]["trinotate"])
+                for x in range(0, CHUNKS_ANNOTATE)
             ]
         )
     output:
@@ -99,11 +101,11 @@ rule trinotate_split_proteome:
             trinotate + "chunks/proteome_{chunk_id}.tsv",
             chunk_id=[
                 '{0:05d}'.format(x)
-                for x in range(0, config["number_of_chunks"]["trinotate"])
+                for x in range(0, CHUNKS_ANNOTATE)
             ]
         )
     params:
-        number_of_chunks = config["number_of_chunks"]["trinotate"]
+        number_of_chunks = CHUNKS_ANNOTATE
     log:
         trinotate + "split_proteome.log"
     benchmark:
@@ -163,7 +165,7 @@ rule trinotate_blastp_merge:
             trinotate + "blastp/proteome_{chunk_id}.tsv",
             chunk_id=[
                 '{0:05d}'.format(x)
-                for x in range(0, config["number_of_chunks"]["trinotate"])
+                for x in range(0, CHUNKS_ANNOTATE)
             ]
         )
     output:
@@ -216,7 +218,7 @@ rule trinotate_hmmscan_merge:
             trinotate + "hmmscan/proteome_{chunk_id}.tsv",
             chunk_id=[
                 '{0:05d}'.format(x)
-                for x in range(0, config["number_of_chunks"]["trinotate"])
+                for x in range(0, CHUNKS_ANNOTATE)
             ]
         )
     output:
@@ -453,8 +455,8 @@ rule trinotate_report:
     output:
         trinotate + "trinotate.tsv"
     params:
-        evalue = config["trinotate"]["evalue"],
-        pfam_cutoff = config["trinotate"]["pfam_cutoff"]
+        evalue = params["trinotate"]["evalue"],
+        pfam_cutoff = params["trinotate"]["pfam_cutoff"]
     log:
         trinotate + "report.log"
     benchmark:

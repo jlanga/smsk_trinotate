@@ -2,7 +2,7 @@ rule download_uniprot_sprot:
     output:
         download + "uniprot_sprot.dat.gz"
     params:
-        url = config["db"]["swissprot"]
+        url = features["swissprot"]
     log:
         download + "uniprot_sprot.log"
     benchmark:
@@ -23,7 +23,7 @@ rule download_nog_annotations:
     output:
         download + "NOG.annotations.tsv.gz"
     params:
-        url = config["db"]["NOG.annotations"]
+        url = features["NOG.annotations"]
     log:
         download + "NOG.annotations.log"
     benchmark:
@@ -44,7 +44,7 @@ rule download_obo:
     output:
         download + "go-basic.obo"
     params:
-        url = config["db"]["obo"]
+        url = features["obo"]
     log:
         download + "obo.log"
     benchmark:
@@ -65,7 +65,7 @@ rule download_pfama:
     output:
         download + "Pfam-A.hmm.gz"
     params:
-        url = config["db"]["Pfam-A"]
+        url = features["Pfam-A"]
     log:
         download + "pfama.log"
     benchmark:

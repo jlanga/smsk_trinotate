@@ -1,0 +1,12 @@
+# Execution parameters
+---
+chunks:  # Please use #chunks < #sequences
+    transdecoder: 2  # Same for blastx and hmmscan
+    trinotate: 2
+
+trinotate:
+    evalue: 1e-5
+    pfam_cutoff: DNC
+    rnammer:
+        rnammer_path: ./src/rnammer-1.2/rnammer  # Modify this
+        org_type: euk  # arc|bac|euk

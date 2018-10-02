@@ -1,6 +1,6 @@
 rule raw_link_assembly:
     input:
-        config["assembly"]
+        ASSEMBLY
     output:
         raw + "assembly.fasta"
     conda:

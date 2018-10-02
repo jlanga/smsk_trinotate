@@ -1,0 +1,10 @@
+# Source for all databases
+---
+swissprot:
+    ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz
+NOG.annotations:
+    http://eggnogdb.embl.de/download/latest/data/NOG/NOG.annotations.tsv.gz
+obo:
+    http://purl.obolibrary.org/obo/go/go-basic.obo
+Pfam-A:
+    ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz

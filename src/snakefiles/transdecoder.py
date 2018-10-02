@@ -1,3 +1,6 @@
+CHUNKS = params["chunks"]["transdecoder"]
+
+
 rule transdecoder_longorfs:
     """
     Predict proteins according to the presence of long ORFs
@@ -36,11 +39,11 @@ rule transdecoder_split_longest_orfs:
             transdecoder + "chunks/longest_orfs_{chunk_id}.tsv",
             chunk_id=[
                 '{0:05d}'.format(x)
-                for x in range(0, config["number_of_chunks"]["transdecoder"])
+                for x in range(0, CHUNKS)
             ]
         )
     params:
-        number_of_chunks = config["number_of_chunks"]["transdecoder"]
+        number_of_chunks = CHUNKS
     log:
         transdecoder + "split_longest_orfs.log"
     benchmark:
@@ -98,7 +101,7 @@ rule transdecoder_hmmscan_merge:
             transdecoder + "hmmscan/longest_orfs_{chunk_id}.tsv",
             chunk_id=[
                 '{0:05d}'.format(x)
-                for x in range(0, config["number_of_chunks"]["transdecoder"])
+                for x in range(0, CHUNKS)
             ]
         )
     output:
@@ -153,7 +156,7 @@ rule transdecoder_blastp_merge:
             transdecoder + "blastp/longest_orfs_{chunk_id}.tsv",
             chunk_id=[
                 '{0:05d}'.format(x)
-                for x in range(0, config["number_of_chunks"]["transdecoder"])
+                for x in range(0, CHUNKS)
             ]
         )
     output:

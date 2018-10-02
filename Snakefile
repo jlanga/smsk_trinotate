@@ -1,6 +1,21 @@
-shell.prefix("set -euo pipefail;")
-configfile: "config.yaml"
+# pylint:disable=syntax-error
 
+import pandas as pd
+import yaml
+
+from snakemake.utils import min_version
+
+min_version("5.0")
+
+shell.prefix("set -euo pipefail;")
+
+params = yaml.load(open("params.yml", "r"))
+features = yaml.load(open("features.yml", "r"))
+samples = pd.read_table("samples.tsv")
+
+singularity: "docker://continuumio/miniconda3:4.4.10"
+
+ASSEMBLY = samples["assembly"][0]
 snakefiles = "src/snakefiles/"
 
 include: snakefiles + "generic.py"
