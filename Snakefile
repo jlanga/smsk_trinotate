@@ -1,5 +1,5 @@
 shell.prefix("set -euo pipefail;")
-configfile: "src/config.yaml"
+configfile: "config.yaml"
 
 snakefiles = "src/snakefiles/"
 
