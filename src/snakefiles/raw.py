@@ -1,12 +1,16 @@
 rule raw_link_assembly:
     input:
-        config["assembly"]
+        ASSEMBLY
     output:
         raw + "assembly.fasta"
+    conda:
+        "raw.yml"
     shell:
-        "ln --symbolic "
-            "$(readlink -f {input}) "
-            "{output}"
+        """
+        ln --symbolic \
+            $(readlink --canonicalize {input}) \
+            {output}
+        """
 
 
 rule raw_gene_to_trans_map:
@@ -18,8 +22,12 @@ rule raw_gene_to_trans_map:
         raw + "gene_to_trans_map.log"
     benchmark:
         raw + "gene_to_trans_map.json"
+    conda:
+        "raw.yml"
     shell:
-        "get_Trinity_gene_to_trans_map.pl "
-            "< {input.fasta} "
-            "> {output.tsv} "
-        "2> {log}"
+        """
+        get_Trinity_gene_to_trans_map.pl \
+            < {input.fasta} \
+            > {output.tsv} \
+        2> {log}
+        """

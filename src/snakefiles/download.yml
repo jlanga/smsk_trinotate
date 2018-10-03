@@ -1,0 +1,7 @@
+channels:
+  - bioconda
+  - r
+  - defaults
+  - conda-forge
+dependencies:
+    - wget=1.19.1

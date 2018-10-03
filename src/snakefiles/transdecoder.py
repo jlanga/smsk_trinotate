@@ -1,3 +1,6 @@
+CHUNKS = params["chunks"]["transdecoder"]
+
+
 rule transdecoder_longorfs:
     """
     Predict proteins according to the presence of long ORFs
@@ -6,20 +9,20 @@ rule transdecoder_longorfs:
         fasta = raw + "assembly.fasta",
         tsv = raw + "gene_to_trans_map.tsv"
     output:
-        "assembly.fasta.transdecoder_dir/longest_orfs.pep",
-        temp(
-            "assembly.fasta.transdecoder_dir/"
-        )
+        "assembly.fasta.transdecoder_dir/longest_orfs.pep"
     log:
         transdecoder + "longorfs.log"
     benchmark:
         transdecoder + "longorfs.json"
+    conda:
+        "transdecoder.yml"
     shell:
-        "TransDecoder.LongOrfs "
-            "-t {input.fasta} "
-            "--gene_trans_map {input.tsv} "
-        "2> {log} 1>&2"
-
+        """
+        TransDecoder.LongOrfs \
+            \-t {input.fasta} \
+            \--gene_trans_map {input.tsv} \
+        2> {log} 1>&2
+        """
 
 
 rule transdecoder_split_longest_orfs:
@@ -31,24 +34,30 @@ rule transdecoder_split_longest_orfs:
     output:
         expand(
             transdecoder + "chunks/longest_orfs_{chunk_id}.tsv",
-            chunk_id = ['{0:05d}'.format(x) for x in range(0, config["number_of_chunks"]["transdecoder"])]
+            chunk_id=[
+                '{0:05d}'.format(x)
+                for x in range(0, CHUNKS)
+            ]
         )
     params:
-        number_of_chunks = config["number_of_chunks"]["transdecoder"]
+        number_of_chunks = CHUNKS
     log:
         transdecoder + "split_longest_orfs.log"
     benchmark:
         transdecoder + "split_longest_orfs.json"
+    conda:
+        "transdecoder.yml"
     shell:
-        "split "
-            "--number l/{params.number_of_chunks} "
-            "--numeric-suffixes "
-            "--suffix-length 5 "
-            "--additional-suffix .tsv "
-            "{input.fai} "
-            "{transdecoder}/chunks/longest_orfs_ "
-        "2> {log}"
-
+        """
+        split \
+            --number l/{params.number_of_chunks} \
+            --numeric-suffixes \
+            --suffix-length 5 \
+            --additional-suffix .tsv \
+            {input.fai} \
+            {transdecoder}/chunks/longest_orfs_ \
+        2> {log}
+        """
 
 
 rule transdecoder_hmmscan_chunk:
@@ -66,15 +75,18 @@ rule transdecoder_hmmscan_chunk:
         transdecoder + "hmmscan/longest_orfs_{chunk_id}.log"
     benchmark:
         transdecoder + "hmmscan/longest_orfs_{chunk_id}.json"
+    conda:
+        "transdecoder.yml"
     shell:
-        "cut -f 1 {input.chunk} "
-        "| xargs samtools faidx {input.pep} "
-        "| hmmscan "
-            "--domtblout {output.tsv} "
-            "{input.hmm} "
-            "- "
-        "2> {log} 1>&2"
-
+        """
+        cut -f 1 {input.chunk} \
+        | xargs samtools faidx {input.pep} \
+        | hmmscan \
+            --domtblout {output.tsv} \
+            {input.hmm} \
+            - \
+        2> {log} 1>&2
+        """
 
 
 rule transdecoder_hmmscan_merge:
@@ -84,7 +96,10 @@ rule transdecoder_hmmscan_merge:
     input:
         expand(
             transdecoder + "hmmscan/longest_orfs_{chunk_id}.tsv",
-            chunk_id = ['{0:05d}'.format(x) for x in range(0, config["number_of_chunks"]["transdecoder"])]
+            chunk_id=[
+                '{0:05d}'.format(x)
+                for x in range(0, CHUNKS)
+            ]
         )
     output:
         tsv = transdecoder + "hmmscan.tsv"
@@ -92,9 +107,10 @@ rule transdecoder_hmmscan_merge:
         transdecoder + "hmmscan_merge.log"
     benchmark:
         transdecoder + "hmmscan_merge.json"
+    conda:
+        "transdecoder.yml"
     shell:
-        "cat {input} > {output} 2> {log}"
-
+        """cat {input} > {output} 2> {log}"""
 
 
 rule transdecoder_blastp_chunk:
@@ -112,17 +128,20 @@ rule transdecoder_blastp_chunk:
         transdecoder + "blastp/longest_orfs_{chunk_id}.log"
     benchmark:
         transdecoder + "blastp/longest_orfs_{chunk_id}.json"
+    conda:
+        "transdecoder.yml"
     shell:
-        "cut -f 1 {input.chunk} "
-        "| xargs samtools faidx {input.pep} "
-        "| blastp "
-            "-db {input.db} "
-            "-max_target_seqs 1 "
-            "-outfmt 6 "
-            "-evalue 1e-5 "
-            "-out {output.tsv} "
-        "2> {log} 1>&2"
-
+        """
+        cut -f 1 {input.chunk} \
+        | xargs samtools faidx {input.pep} \
+        | blastp \
+            -db {input.db} \
+            -max_target_seqs 1 \
+            -outfmt 6 \
+            -evalue 1e-5 \
+            -out {output.tsv} \
+        2> {log} 1>&2
+        """
 
 
 rule transdecoder_blastp_merge:
@@ -132,7 +151,10 @@ rule transdecoder_blastp_merge:
     input:
         expand(
             transdecoder + "blastp/longest_orfs_{chunk_id}.tsv",
-            chunk_id = ['{0:05d}'.format(x) for x in range(0, config["number_of_chunks"]["transdecoder"])]
+            chunk_id=[
+                '{0:05d}'.format(x)
+                for x in range(0, CHUNKS)
+            ]
         )
     output:
         tsv = transdecoder + "blastp.tsv"
@@ -140,9 +162,10 @@ rule transdecoder_blastp_merge:
         transdecoder + "blastp_merge.log"
     benchmark:
         transdecoder + "blastp_merge.json"
+    conda:
+        "transdecoder.yml"
     shell:
         "cat {input} > {output} 2> {log}"
-
 
 
 rule transdecoder_predict:
@@ -152,19 +175,18 @@ rule transdecoder_predict:
     input:
         fasta = raw + "assembly.fasta",
         pfam_tsv = transdecoder + "hmmscan.tsv",
-        blastp_tsv = transdecoder + "blastp.tsv",
-        folder = "assembly.fasta.transdecoder_dir/"
+        blastp_tsv = transdecoder + "blastp.tsv"
     output:
-        bed  = transdecoder + "transdecoder.bed",
-        cds  = transdecoder + "transdecoder.cds",
+        bed = transdecoder + "transdecoder.bed",
+        cds = transdecoder + "transdecoder.cds",
         gff3 = transdecoder + "transdecoder.gff3",
-        pep  = transdecoder + "transdecoder.pep",
+        pep = transdecoder + "transdecoder.pep",
     params:
-        dir  = "assembly.fasta.transdecoder_dir",
-        bed  = "assembly.fasta.transdecoder.bed",
-        cds  = "assembly.fasta.transdecoder.cds",
+        dir = "assembly.fasta.transdecoder_dir",
+        bed = "assembly.fasta.transdecoder.bed",
+        cds = "assembly.fasta.transdecoder.cds",
         gff3 = "assembly.fasta.transdecoder.gff3",
-        pep  = "assembly.fasta.transdecoder.pep",
+        pep = "assembly.fasta.transdecoder.pep",
         checkpoints = "assembly.fasta.transdecoder_dir.__checkpoints"
     threads:
         24
@@ -172,15 +194,20 @@ rule transdecoder_predict:
         transdecoder + "predict.log"
     benchmark:
         transdecoder + "predict.json"
+    conda:
+        "transdecoder.yml"
     shell:
-        "TransDecoder.Predict "
-            "-t {input.fasta} "
-            "--retain_pfam_hits {input.pfam_tsv} "
-            "--retain_blastp_hits {input.blastp_tsv} "
-            "--cpu {threads} "
-        "2> {log} 1>&2 ;"
-        "mv {params.bed} {output.bed} 2>> {log} 1>&2; "
-        "mv {params.cds} {output.cds} 2>> {log} 1>&2; "
-        "mv {params.gff3} {output.gff3} 2>> {log} 1>&2; "
-        "mv {params.pep} {output.pep} 2>> {log} 1>&2; "
-        "rm -rf {params.dir} {params.checkpoints} 2>> {log} 1>&2"
+        """
+        TransDecoder.Predict \
+            -t {input.fasta} \
+            --retain_pfam_hits {input.pfam_tsv} \
+            --retain_blastp_hits {input.blastp_tsv} \
+            --cpu {threads} \
+        2> {log} 1>&2
+
+        mv {params.bed} {output.bed} 2>> {log} 1>&2
+        mv {params.cds} {output.cds} 2>> {log} 1>&2
+        mv {params.gff3} {output.gff3} 2>> {log} 1>&2
+        mv {params.pep} {output.pep} 2>> {log} 1>&2
+        rm -rf {params.dir} {params.checkpoints} 2>> {log} 1>&2
+        """

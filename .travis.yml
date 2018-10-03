@@ -26,5 +26,8 @@ install:
 script:
   - export PATH="$HOME/miniconda3_$TRAVIS_OS_NAME/bin:$PATH"
   - echo $PATH
-  - source activate smsk_trinotate
-  - snakemake -j
+  - snakemake --use-conda -j
+
+after_failure:
+    - cat data/db/hmmpress_pfama.log
+    - find results -name "*.log" -type f | xargs ls -tr | xargs tail -n+2
