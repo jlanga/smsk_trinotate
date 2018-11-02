@@ -34,10 +34,7 @@ rule transdecoder_split_longest_orfs:
     output:
         expand(
             transdecoder + "chunks/longest_orfs_{chunk_id}.tsv",
-            chunk_id=[
-                '{0:05d}'.format(x)
-                for x in range(0, CHUNKS)
-            ]
+            chunk_id=['{0:05d}'.format(x) for x in range(0, CHUNKS)]
         )
     params:
         number_of_chunks = CHUNKS
@@ -96,10 +93,7 @@ rule transdecoder_hmmscan_merge:
     input:
         expand(
             transdecoder + "hmmscan/longest_orfs_{chunk_id}.tsv",
-            chunk_id=[
-                '{0:05d}'.format(x)
-                for x in range(0, CHUNKS)
-            ]
+            chunk_id=['{0:05d}'.format(x) for x in range(0, CHUNKS)]
         )
     output:
         tsv = transdecoder + "hmmscan.tsv"
