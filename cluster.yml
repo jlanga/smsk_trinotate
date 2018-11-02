@@ -1,0 +1,5 @@
+# Cluster parameters
+---
+__default__:
+    time: "06:00:00"
+    mem: 1024
