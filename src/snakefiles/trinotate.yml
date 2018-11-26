@@ -1,10 +1,9 @@
 # Environment to run trinotate, blast and hmmer
 ---
 channels:
-    - bioconda
-    - r
-    - defaults
     - conda-forge
+    - bioconda
+    - defaults
 dependencies:
     - coreutils=8.25-0  # split
     - hmmer=3.1b2=2
