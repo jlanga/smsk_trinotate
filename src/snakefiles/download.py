@@ -1,12 +1,12 @@
 rule download_uniprot_sprot:
     output:
-        download + "uniprot_sprot.dat.gz"
+        DOWNLOAD + "uniprot_sprot.dat.gz"
     params:
         url = features["swissprot"]
     log:
-        download + "uniprot_sprot.log"
+        DOWNLOAD + "uniprot_sprot.log"
     benchmark:
-        download + "uniprot_sprot.json"
+        DOWNLOAD + "uniprot_sprot.bmk"
     conda:
         "download.yml"
     shell:
@@ -21,13 +21,13 @@ rule download_uniprot_sprot:
 
 rule download_nog_annotations:
     output:
-        download + "NOG.annotations.tsv.gz"
+        DOWNLOAD + "NOG.annotations.tsv.gz"
     params:
         url = features["NOG.annotations"]
     log:
-        download + "NOG.annotations.log"
+        DOWNLOAD + "NOG.annotations.log"
     benchmark:
-        download + "NOG.annotations.json"
+        DOWNLOAD + "NOG.annotations.bmk"
     conda:
         "download.yml"
     shell:
@@ -42,13 +42,13 @@ rule download_nog_annotations:
 
 rule download_obo:
     output:
-        download + "go-basic.obo"
+        DOWNLOAD + "go-basic.obo"
     params:
         url = features["obo"]
     log:
-        download + "obo.log"
+        DOWNLOAD + "obo.log"
     benchmark:
-        download + "obo.json"
+        DOWNLOAD + "obo.bmk"
     conda:
         "download.yml"
     shell:
@@ -63,13 +63,13 @@ rule download_obo:
 
 rule download_pfama:
     output:
-        download + "Pfam-A.hmm.gz"
+        DOWNLOAD + "Pfam-A.hmm.gz"
     params:
         url = features["Pfam-A"]
     log:
-        download + "pfama.log"
+        DOWNLOAD + "pfama.log"
     benchmark:
-        download + "pfama.json"
+        DOWNLOAD + "pfama.bmk"
     conda:
         "download.yml"
     shell:

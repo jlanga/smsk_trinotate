@@ -1,7 +1,8 @@
+# Generic rules
+---
 channels:
-  - bioconda
-  - r
-  - defaults
-  - conda-forge
+    - conda-forge
+    - bioconda
+    - defaults
 dependencies:
-- samtools
+    - samtools

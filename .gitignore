@@ -1,3 +1,6 @@
 .snakemake/
 results/*
 data
+.conda
+slurm-*
+pipeliner*

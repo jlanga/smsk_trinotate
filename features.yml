@@ -1,7 +1,7 @@
 # Source for all databases
 ---
 swissprot:
-    ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz
+    ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz
 NOG.annotations:
     http://eggnogdb.embl.de/download/latest/data/NOG/NOG.annotations.tsv.gz
 obo:
