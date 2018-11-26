@@ -112,7 +112,7 @@ rule db_makeblastdb_uniprot_sprot:
     conda:
         "db.yml"
     shell:
-        "makeblastDB "
+        "makeblastdb "
         "    -dbtype prot "
         "    -title {output} "
         "    -out {output} "
