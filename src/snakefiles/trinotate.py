@@ -1,3 +1,5 @@
+CHUNKS_ANNOTATE = params["chunks"]["trinotate"]
+
 rule trinotate_split_assembly:
     """
     Split the headers from assembly into multiple files
@@ -7,24 +9,30 @@ rule trinotate_split_assembly:
     output:
         expand(
             trinotate + "chunks/assembly_{chunk_id}.tsv",
-            chunk_id = ['{0:05d}'.format(x) for x in range(0, config["number_of_chunks"]["trinotate"])]
+            chunk_id=[
+                '{0:05d}'.format(x)
+                for x in range(0, CHUNKS_ANNOTATE)
+            ]
         )
     params:
-        number_of_chunks = config["number_of_chunks"]["trinotate"]
+        number_of_chunks = CHUNKS_ANNOTATE
     log:
         trinotate + "split_assembly.log"
     benchmark:
         trinotate + "split_assembly.json"
+    conda:
+        "trinotate.yml"
     shell:
-        "split "
-            "--number l/{params.number_of_chunks} "
-            "--numeric-suffixes "
-            "--suffix-length 5 "
-            "--additional-suffix .tsv "
-            "{input.fai} "
-            "{trinotate}/chunks/assembly_ "
-        "2> {log}"
-
+        """
+        split \
+            --number l/{params.number_of_chunks} \
+            --numeric-suffixes \
+            --suffix-length 5 \
+            --additional-suffix .tsv \
+            {input.fai} \
+            {trinotate}/chunks/assembly_ \
+        2> {log}
+        """
 
 
 rule trinotate_blastx_chunk:
@@ -42,17 +50,20 @@ rule trinotate_blastx_chunk:
         trinotate + "blastx/assembly_{chunk_id}.log"
     benchmark:
         trinotate + "blastx/assembly_{chunk_id}.json"
+    conda:
+        "trinotate.yml"
     shell:
-        "cut -f 1 {input.chunk} "
-        "| xargs samtools faidx {input.fa} "
-        "| blastx "
-            "-db {input.db} "
-            "-max_target_seqs 1 "
-            "-outfmt 6 "
-            "-evalue 1e-5 "
-            "-out {output.tsv} "
-        "2> {log} 1>&2"
-
+        """
+        cut -f 1 {input.chunk} \
+        | xargs samtools faidx {input.fa} \
+        | blastx \
+            -db {input.db} \
+            -max_target_seqs 1 \
+            -outfmt 6 \
+            -evalue 1e-5 \
+            -out {output.tsv} \
+        2> {log} 1>&2
+        """
 
 
 rule trinotate_blastx_merge:
@@ -62,7 +73,10 @@ rule trinotate_blastx_merge:
     input:
         expand(
             trinotate + "blastx/assembly_{chunk_id}.tsv",
-            chunk_id = ['{0:05d}'.format(x) for x in range(0, config["number_of_chunks"]["trinotate"])]
+            chunk_id=[
+                '{0:05d}'.format(x)
+                for x in range(0, CHUNKS_ANNOTATE)
+            ]
         )
     output:
         tsv = trinotate + "blastx.tsv"
@@ -70,9 +84,10 @@ rule trinotate_blastx_merge:
         trinotate + "blastx_merge.log"
     benchmark:
         trinotate + "blastx_merge.json"
+    conda:
+        "trinotate.yml"
     shell:
         "cat {input} > {output} 2> {log}"
-
 
 
 rule trinotate_split_proteome:
@@ -84,24 +99,30 @@ rule trinotate_split_proteome:
     output:
         expand(
             trinotate + "chunks/proteome_{chunk_id}.tsv",
-            chunk_id = ['{0:05d}'.format(x) for x in range(0, config["number_of_chunks"]["trinotate"])]
+            chunk_id=[
+                '{0:05d}'.format(x)
+                for x in range(0, CHUNKS_ANNOTATE)
+            ]
         )
     params:
-        number_of_chunks = config["number_of_chunks"]["trinotate"]
+        number_of_chunks = CHUNKS_ANNOTATE
     log:
         trinotate + "split_proteome.log"
     benchmark:
         trinotate + "split_proteome.json"
+    conda:
+        "trinotate.yml"
     shell:
-        "split "
-            "--number l/{params.number_of_chunks} "
-            "--numeric-suffixes "
-            "--suffix-length 5 "
-            "--additional-suffix .tsv "
-            "{input.fai} "
-            "{trinotate}/chunks/proteome_ "
-        "2> {log}"
-
+        """
+        split \
+            --number l/{params.number_of_chunks} \
+            --numeric-suffixes \
+            --suffix-length 5 \
+            --additional-suffix .tsv \
+            {input.fai} \
+            {trinotate}/chunks/proteome_ \
+        2> {log}
+        """
 
 
 rule trinotate_blastp_chunk:
@@ -119,17 +140,20 @@ rule trinotate_blastp_chunk:
         trinotate + "blastp/proteome_{chunk_id}.log"
     benchmark:
         trinotate + "blastp/proteome_{chunk_id}.json"
+    conda:
+        "trinotate.yml"
     shell:
-        "cut -f 1 {input.chunk} "
-        "| xargs samtools faidx {input.pep} "
-        "| blastp "
-            "-db {input.db} "
-            "-max_target_seqs 1 "
-            "-outfmt 6 "
-            "-evalue 1e-5 "
-            "-out {output.tsv} "
-        "2> {log} 1>&2"
-
+        """
+        cut -f 1 {input.chunk} \
+        | xargs samtools faidx {input.pep} \
+        | blastp \
+            -db {input.db} \
+            -max_target_seqs 1 \
+            -outfmt 6 \
+            -evalue 1e-5 \
+            -out {output.tsv} \
+        2> {log} 1>&2
+        """
 
 
 rule trinotate_blastp_merge:
@@ -139,7 +163,10 @@ rule trinotate_blastp_merge:
     input:
         expand(
             trinotate + "blastp/proteome_{chunk_id}.tsv",
-            chunk_id = ['{0:05d}'.format(x) for x in range(0, config["number_of_chunks"]["trinotate"])]
+            chunk_id=[
+                '{0:05d}'.format(x)
+                for x in range(0, CHUNKS_ANNOTATE)
+            ]
         )
     output:
         tsv = trinotate + "blastp.tsv"
@@ -147,9 +174,10 @@ rule trinotate_blastp_merge:
         trinotate + "blastp_merge.log"
     benchmark:
         trinotate + "blastp_merge.json"
+    conda:
+        "trinotate.yml"
     shell:
         "cat {input} > {output} 2> {log}"
-
 
 
 rule trinotate_hmmscan_chunk:
@@ -167,15 +195,18 @@ rule trinotate_hmmscan_chunk:
         trinotate + "hmmscan/proteome_{chunk_id}.log"
     benchmark:
         trinotate + "hmmscan/proteome_{chunk_id}.json"
+    conda:
+        "trinotate.yml"
     shell:
-        "cut -f 1 {input.chunk} "
-        "| xargs samtools faidx {input.pep} "
-        "| hmmscan "
-            "--domtblout {output.tsv} "
-            "{input.hmm} "
-            "- "
-        "2> {log} 1>&2"
-
+        """
+        cut -f 1 {input.chunk} \
+        | xargs samtools faidx {input.pep} \
+        | hmmscan \
+            --domtblout {output.tsv} \
+            {input.hmm} \
+            - \
+        2> {log} 1>&2
+        """
 
 
 rule trinotate_hmmscan_merge:
@@ -185,7 +216,10 @@ rule trinotate_hmmscan_merge:
     input:
         expand(
             trinotate + "hmmscan/proteome_{chunk_id}.tsv",
-            chunk_id = ['{0:05d}'.format(x) for x in range(0, config["number_of_chunks"]["trinotate"])]
+            chunk_id=[
+                '{0:05d}'.format(x)
+                for x in range(0, CHUNKS_ANNOTATE)
+            ]
         )
     output:
         tsv = trinotate + "hmmscan.tsv"
@@ -193,6 +227,8 @@ rule trinotate_hmmscan_merge:
         trinotate + "hmmscan_merge.log"
     benchmark:
         trinotate + "hmmscan_merge.json"
+    conda:
+        "trinotate.yml"
     shell:
         "cat {input} > {output} 2> {log}"
 
@@ -209,14 +245,14 @@ rule trinotate_hmmscan_merge:
 #         trinotate + "signalp.log"
 #     benchmark:
 #         trinotate + "signalp.json"
+#     conda:
+#         "trinotate.yml"
 #     shell:
 #         "./src/signalp-4.1/signalp "
 #             "-f short "
 #             "-n {output.tsv} "
 #             "{input.pep} "
 #         "2> {log} 1>&2 "
-
-
 
 
 # rule trinotate_tmhmm:
@@ -231,6 +267,8 @@ rule trinotate_hmmscan_merge:
 #         trinotate + "tmhmm.log"
 #     benchmark:
 #         trinotate + "tmhmm.json"
+#     conda:
+#         "trinotate.yml"
 #     shell:
 #         "./src/tmhmm-2.0c/bin/tmhmm "
 #             "--short "
@@ -238,7 +276,6 @@ rule trinotate_hmmscan_merge:
 #         "> {output.tsv} "
 #         "2> {log} && "
 #         "rm -rf TMHMM_*"
-
 
 
 # rule trinotate_rnammer:
@@ -258,6 +295,8 @@ rule trinotate_hmmscan_merge:
 #         trinotate + "rnammer.log"
 #     benchmark:
 #         trinotate + "rnammer.json"
+#     conda:
+#         "trinotate.yml"
 #     shell:
 #         "./src/Trinotate-3.0.2/util/rnammer_support/RnammerTranscriptome.pl "
 #             "--transcriptome {input.assembly} "
@@ -268,7 +307,6 @@ rule trinotate_hmmscan_merge:
 #         "rm tmp.superscaff.rnammer.gff "
 #             "transcriptSuperScaffold.bed "
 #             "transcriptSuperScaffold.fasta"
-
 
 
 rule trinotate_create:
@@ -282,12 +320,15 @@ rule trinotate_create:
         trinotate + "create.log"
     benchmark:
         trinotate + "create.json"
+    conda:
+        "trinotate.yml"
     shell:
-        "EMBL_dat_to_Trinotate_sqlite_resourceDB.pl "
-            "--sqlite {output.sqlite} "
-            "--create "
-        "2> {log} 1>&2"
-
+        """
+        EMBL_dat_to_Trinotate_sqlite_resourceDB.pl \
+            --sqlite {output.sqlite} \
+            --create \
+        2> {log} 1>&2
+        """
 
 
 rule trinotate_init:
@@ -295,7 +336,7 @@ rule trinotate_init:
     Initialize db with genes, transcripts and proteins
     """
     input:
-        sqlite = trinotate + "trinotate.sqlite",
+        sqlite = ancient(trinotate + "trinotate.sqlite"),
         is_created = trinotate + "create.txt",
         g2t = raw + "gene_to_trans_map.tsv",
         assembly = raw + "assembly.fasta",
@@ -306,18 +347,21 @@ rule trinotate_init:
         trinotate + "init.log"
     benchmark:
         trinotate + "init.json"
+    conda:
+        "trinotate.yml"
     shell:
-        "Trinotate {input.sqlite} init "
-            "--gene_trans_map {input.g2t} "
-            "--transcript_fasta {input.assembly} "
-            "--transdecoder_pep {input.proteome} "
-        "2> {log} 1>&2"
-
+        """
+        Trinotate {input.sqlite} init \
+            --gene_trans_map {input.g2t} \
+            --transcript_fasta {input.assembly} \
+            --transdecoder_pep {input.proteome} \
+        2> {log} 1>&2
+        """
 
 
 rule trinotate_fill:
     input:
-        sqlite = trinotate + "trinotate.sqlite",
+        sqlite = ancient(trinotate + "trinotate.sqlite"),
         is_init = trinotate + "init.txt",
         eggnog = db + "NOG.annotations.tsv.bulk_load",
         go = db + "go-basic.obo.tab",
@@ -330,22 +374,24 @@ rule trinotate_fill:
         db + "fill.log"
     benchmark:
         db + "fill.json"
+    conda:
+        "trinotate.yml"
     shell:
-        "EMBL_dat_to_Trinotate_sqlite_resourceDB.pl "
-            "--sqlite {input.sqlite} "
-            "--eggnog {input.eggnog} "
-            "--go_obo_tab {input.go} "
-            "--uniprot_index {input.uniprot_index} "
-            "--taxonomy_index {input.taxonomy_index} "
-            "--pfam {input.pfam} "
-        "2> {log} 1>&2"
-
-
+        """
+        EMBL_dat_to_Trinotate_sqlite_resourceDB.pl \
+            --sqlite {input.sqlite} \
+            --eggnog {input.eggnog} \
+            --go_obo_tab {input.go} \
+            --uniprot_index {input.uniprot_index} \
+            --taxonomy_index {input.taxonomy_index} \
+            --pfam {input.pfam} \
+        2> {log} 1>&2
+        """
 
 
 rule trinotate_load:
     input:
-        sqlite = trinotate + "trinotate.sqlite",
+        sqlite = ancient(trinotate + "trinotate.sqlite"),
         is_filled = trinotate + "fill.txt",
         blastx = trinotate + "blastx.tsv",
         blastp = trinotate + "blastp.tsv",
@@ -359,39 +405,69 @@ rule trinotate_load:
         trinotate + "load.log"
     benchmark:
         trinotate + "load.json"
+    conda:
+        "trinotate.yml"
     shell:
-        "Trinotate {input.sqlite} "
-            "LOAD_swissprot_blastp {input.blastp} 2> {log} 1>&2; "
-        "Trinotate {input.sqlite} "
-            "LOAD_pfam {input.pfam} 2>> {log} 1>&2; "
-        # "Trinotate {input.sqlite} "
-        #     "LOAD_tmhmm {input.tmhmm} 2>> {log} 1>&2; "
-        # "Trinotate {input.sqlite} "
-        #     "LOAD_signalp {input.signalp} 2>> {log} 1>&2; "
-        "Trinotate {input.sqlite} "
-            "LOAD_swissprot_blastx {input.blastx} 2>> {log} 1>&2; "
-        # "Trinotate {input.sqlite} "
-        #     "LOAD_rnammer {input.rnammer} 2>> {log} 1>&2; "
+        """
+        Trinotate \
+            {input.sqlite} \
+            LOAD_swissprot_blastp \
+            {input.blastp} \
+        2> {log} 1>&2
 
+        Trinotate \
+            {input.sqlite} \
+            LOAD_pfam \
+            {input.pfam} \
+        2>> {log} 1>&2
 
+        Trinotate \
+            {input.sqlite} \
+            LOAD_swissprot_blastx \
+            {input.blastx} \
+        2>> {log} 1>&2
+        """
+        # """
+        # Trinotate \
+        #     {input.sqlite} \
+        #     LOAD_signalp \
+        #     {input.signalp} \
+        # 2>> {log} 1>&2
+        #
+        # Trinotate \
+        #     {input.sqlite} \
+        #     LOAD_tmhmm \
+        #     {input.tmhmm} \
+        # 2>> {log} 1>&2
+        #
+        # Trinotate \
+        #   {input.sqlite} \
+        #   LOAD_rnammer \
+        #   {input.rnammer} \
+        # 2>> {log} 1>&2
+        # """
 
 
 rule trinotate_report:
     input:
-        sqlite = trinotate + "trinotate.sqlite",
+        sqlite = ancient(trinotate + "trinotate.sqlite"),
         is_loaded = trinotate + "load.txt"
     output:
         trinotate + "trinotate.tsv"
     params:
-        evalue = config["trinotate"]["evalue"],
-        pfam_cutoff = config["trinotate"]["pfam_cutoff"]
+        evalue = params["trinotate"]["evalue"],
+        pfam_cutoff = params["trinotate"]["pfam_cutoff"]
     log:
         trinotate + "report.log"
     benchmark:
         trinotate + "report.json"
+    conda:
+        "trinotate.yml"
     shell:
-        "Trinotate {input.sqlite} report "
-            "-E {params.evalue} "
-            "--pfam_cutoff {params.pfam_cutoff} "
-        "> {output} "
-        "2> {log}"
+        """
+        Trinotate {input.sqlite} report \
+            -E {params.evalue} \
+            --pfam_cutoff {params.pfam_cutoff} \
+        > {output} \
+        2> {log}
+        """

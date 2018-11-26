@@ -9,18 +9,25 @@ addons:
         - curl
 
 cache:
+    apt: true
     directories:
-        - $HOME/data/download/
-        - $HOME/miniconda3/
+        - $HOME/miniconda3_$TRAVIS_OS_NAME/
+    timeout: 1000
 
 before_install:
   - bash .travis/travis_before_install.sh
-  - export PATH="/home/travis/miniconda3/bin:$PATH"
+
 
 install:
-  - bash src/install/conda_env.sh
+  - export PATH="$HOME/miniconda3_$TRAVIS_OS_NAME/bin:$PATH"
+  - echo $PATH
+  - bash .travis/travis_install.sh
 
 script:
-  - source activate smsk_trinotate
-  - travis_wait 30 snakemake -j
-  - cat results/trinotate/trinotate.tsv
+  - export PATH="$HOME/miniconda3_$TRAVIS_OS_NAME/bin:$PATH"
+  - echo $PATH
+  - snakemake --use-conda -j
+
+after_failure:
+    - cat data/db/hmmpress_pfama.log
+    - find results -name "*.log" -type f | xargs ls -tr | xargs tail -n+2
