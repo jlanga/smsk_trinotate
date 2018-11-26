@@ -1,7 +1,9 @@
+# Env to download files from the internet
+---
 channels:
-  - bioconda
-  - r
-  - defaults
-  - conda-forge
+    - bioconda
+    - r
+    - defaults
+    - conda-forge
 dependencies:
     - wget=1.19.1

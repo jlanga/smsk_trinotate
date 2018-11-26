@@ -1,7 +1,9 @@
+# Env to produce raw files: linking and g2t map
+---
 channels:
-  - bioconda
-  - r
-  - defaults
-  - conda-forge
+    - bioconda
+    - r
+    - defaults
+    - conda-forge
 dependencies:
-- trinity=2.4.0=5
+    - trinity=2.4.0=5

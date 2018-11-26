@@ -1,9 +1,11 @@
+# Env to create blast, hmmer and trinotate databases
+---
 channels:
-- bioconda
-- r
-- defaults
-- conda-forge
+    - bioconda
+    - r
+    - defaults
+    - conda-forge
 dependencies:
-- trinotate=3.0.2=pl5.22.0_0
-- hmmer=3.1b2=2
-- blast=2.6.0=boost1.61_0
+    - trinotate=3.0.2=pl5.22.0_0
+    - hmmer=3.1b2=2
+    - blast=2.6.0=boost1.61_0

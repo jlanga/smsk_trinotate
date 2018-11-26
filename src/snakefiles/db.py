@@ -1,17 +1,17 @@
 rule db_parse_uniprot_sprot:
     input:
-        download + "uniprot_sprot.dat.gz"
+        DOWNLOAD + "uniprot_sprot.dat.gz"
     output:
-        taxonomy = db + "trinotate.TaxonomyIndex",
-        uniprot = db + "trinotate.UniprotIndex",
-        pep = download + "uniprot_sprot.pep"
+        taxonomy = DB + "trinotate.TaxonomyIndex",
+        uniprot = DB + "trinotate.UniprotIndex",
+        pep = DOWNLOAD + "uniprot_sprot.pep"
     params:
-        pep_tmp = download + "uniprot_sprot.dat.gz.pep",
-        prefix = db + "trinotate"
+        pep_tmp = DOWNLOAD + "uniprot_sprot.dat.gz.pep",
+        prefix = DB + "trinotate"
     log:
-        db + "parse_uniprot_sprot.log"
+        DB + "parse_uniprot_sprot.log"
     benchmark:
-        db + "parse_uniprot_sprot.josn"
+        DB + "parse_uniprot_sprot.bmk"
     conda:
         "db.yml"
     shell:
@@ -22,13 +22,13 @@ rule db_parse_uniprot_sprot:
 
 rule db_obo_to_tab:
     input:
-        download + "go-basic.obo"
+        DOWNLOAD + "go-basic.obo"
     output:
-        db + "go-basic.obo.tab"
+        DB + "go-basic.obo.tab"
     log:
-        db + "obo_to_tab.log"
+        DB + "obo_to_tab.log"
     benchmark:
-        db + "obo_to_tab.json"
+        DB + "obo_to_tab.bmk"
     conda:
         "db.yml"
     shell:
@@ -37,13 +37,13 @@ rule db_obo_to_tab:
 
 rule db_parse_nog:
     input:
-        tab = download + "NOG.annotations.tsv.gz"
+        tab = DOWNLOAD + "NOG.annotations.tsv.gz"
     output:
-        db + "NOG.annotations.tsv.bulk_load"
+        DB + "NOG.annotations.tsv.bulk_load"
     log:
-        db + "parse_nog.log"
+        DB + "parse_nog.log"
     benchmark:
-        db + "parse_nog.json"
+        DB + "parse_nog.bmk"
     conda:
         "db.yml"
     shell:
@@ -54,15 +54,15 @@ rule db_parse_nog:
 
 rule db_parse_pfam:
     input:
-        download + "Pfam-A.hmm.gz"
+        DOWNLOAD + "Pfam-A.hmm.gz"
     output:
-        db + "Pfam-A.hmm.gz.pfam_sqlite_bulk_load"
+        DB + "Pfam-A.hmm.gz.pfam_sqlite_bulk_load"
     params:
-        tmp = download + "Pfam-A.hmm.gz.pfam_sqlite_bulk_load"
+        tmp = DOWNLOAD + "Pfam-A.hmm.gz.pfam_sqlite_bulk_load"
     log:
-        db + "parse_pfam.log"
+        DB + "parse_pfam.log"
     benchmark:
-        db + "parse_pfam.json"
+        DB + "parse_pfam.bmk"
     conda:
         "db.yml"
     shell:
@@ -75,17 +75,17 @@ rule db_hmmpress_pfama:
     Format the HMM Pfam-A database
     """
     input:
-        hmm_gz = download + "Pfam-A.hmm.gz"
+        hmm_gz = DOWNLOAD + "Pfam-A.hmm.gz"
     output:
-        hmm = db + "Pfam-A.hmm",
+        hmm = DB + "Pfam-A.hmm",
         other = expand(
-            db + "Pfam-A.hmm.{extension}",
+            DB + "Pfam-A.hmm.{extension}",
             extension="h3i h3f h3p".split()
         )
     log:
-        db + "hmmpress_pfama.log"
+        DB + "hmmpress_pfama.log"
     benchmark:
-        db + "hmmpress_pfama.json"
+        DB + "hmmpress_pfama.bmk"
     conda:
         "db.yml"
     shell:
@@ -100,19 +100,19 @@ rule db_makeblastdb_uniprot_sprot:
     Make the SwissProt filtered database
     """
     input:
-        download + "uniprot_sprot.pep"
+        DOWNLOAD + "uniprot_sprot.pep"
     output:
-        touch(db + "uniprot_sprot")
+        touch(DB + "uniprot_sprot")
     threads:
         1
     log:
-        db + "makeblastdb_uniprot_sprot.log"
+        DB + "makeblastdb_uniprot_sprot.log"
     benchmark:
-        db + "makeblastdb_uniprot_sprot.json"
+        DB + "makeblastdb_uniprot_sprot.bmk"
     conda:
         "db.yml"
     shell:
-        "makeblastdb "
+        "makeblastDB "
         "    -dbtype prot "
         "    -title {output} "
         "    -out {output} "

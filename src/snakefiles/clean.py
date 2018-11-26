@@ -1,3 +1,3 @@
 rule clean:
     shell:
-        "rm -r results/"
+        "rm -rf results/"

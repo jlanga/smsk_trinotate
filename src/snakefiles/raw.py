@@ -2,7 +2,7 @@ rule raw_link_assembly:
     input:
         ASSEMBLY
     output:
-        raw + "assembly.fasta"
+        RAW + "assembly.fasta"
     conda:
         "raw.yml"
     shell:
@@ -15,13 +15,13 @@ rule raw_link_assembly:
 
 rule raw_gene_to_trans_map:
     input:
-        fasta = raw + "assembly.fasta"
+        fasta = RAW + "assembly.fasta"
     output:
-        tsv = raw + "gene_to_trans_map.tsv"
+        tsv = RAW + "gene_to_trans_map.tsv"
     log:
-        raw + "gene_to_trans_map.log"
+        RAW + "gene_to_trans_map.log"
     benchmark:
-        raw + "gene_to_trans_map.json"
+        RAW + "gene_to_trans_map.bmk"
     conda:
         "raw.yml"
     shell:

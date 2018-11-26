@@ -1,3 +1,5 @@
+# Travis config file
+---
 dist: trusty
 
 language: bash
@@ -15,18 +17,18 @@ cache:
     timeout: 1000
 
 before_install:
-  - bash .travis/travis_before_install.sh
+    - bash .travis/travis_before_install.sh
 
 
 install:
-  - export PATH="$HOME/miniconda3_$TRAVIS_OS_NAME/bin:$PATH"
-  - echo $PATH
-  - bash .travis/travis_install.sh
+    - export PATH="$HOME/miniconda3_$TRAVIS_OS_NAME/bin:$PATH"
+    - echo $PATH
+    - bash .travis/travis_install.sh
 
 script:
-  - export PATH="$HOME/miniconda3_$TRAVIS_OS_NAME/bin:$PATH"
-  - echo $PATH
-  - snakemake --use-conda -j
+    - export PATH="$HOME/miniconda3_$TRAVIS_OS_NAME/bin:$PATH"
+    - echo $PATH
+    - snakemake --use-conda -j
 
 after_failure:
     - cat data/db/hmmpress_pfama.log

@@ -5,7 +5,7 @@ import yaml
 
 from snakemake.utils import min_version
 
-min_version("5.0")
+min_version("5.3")
 
 shell.prefix("set -euo pipefail;")
 
@@ -31,27 +31,27 @@ rule all:
     input:
         # Trinotate preparations
         # # Swissprot
-        # download + "uniprot_sprot.dat.gz",
-        # db + prefix + ".TaxonomyIndex",
-        # db + prefix + ".UniprotIndex",
-        # download +  "uniprot_sprot.pep",
+        # DOWNLOAD + "uniprot_sprot.dat.gz",
+        # DB + prefix + ".TaxonomyIndex",
+        # DB + prefix + ".UniprotIndex",
+        # DOWNLOAD +  "uniprot_sprot.pep",
         # # Eggnog
-        # download + "NOG.annotations.tsv.gz",
-        # db + "NOG.annotations.tsv.bulk_load",
+        # DOWNLOAD + "NOG.annotations.tsv.gz",
+        # DB + "NOG.annotations.tsv.bulk_load",
         # # Pfam-A
-        # download + "Pfam-A.hmm.gz",
-        # db + "Pfam-A.hmm.gz.pfam_sqlite_bulk_load",
+        # DOWNLOAD + "Pfam-A.hmm.gz",
+        # DB + "Pfam-A.hmm.gz.pfam_sqlite_bulk_load",
         # # obo
-        # download + "go-basic.obo",
-        # db + "go-basic.obo.tab",
+        # DOWNLOAD + "go-basic.obo",
+        # DB + "go-basic.obo.tab",
         # # Db
-        # db + prefix + ".sqlite",
-        # db + prefix + ".loaded",
+        # DB + prefix + ".sqlite",
+        # DB + prefix + ".loaded",
         # Transdecoder
-        # transdecoder + "transdecoder.cds.fai",
-        # transdecoder + "transdecoder.pep.fai"
-        # trinotate + "blastx.tsv",
-        # trinotate + "blastp.tsv",
-        # trinotate + "hmmscan.tsv",
-        # trinotate + "init.txt",
-        trinotate + "trinotate.tsv"
+        # TRANSDECODER + "transdecoder.cds.fai",
+        # TRANSDECODER + "transdecoder.pep.fai"
+        # TRINOTATE + "blastx.tsv",
+        # TRINOTATE + "blastp.tsv",
+        # TRINOTATE + "hmmscan.tsv",
+        # TRINOTATE + "init.txt",
+        TRINOTATE + "trinotate.tsv"
