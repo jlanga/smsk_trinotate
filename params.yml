@@ -1,8 +1,8 @@
 # Execution parameters
 ---
 chunks:  # Please use #chunks < #sequences
-    transdecoder: 2  # Same for blastx and hmmscan
-    trinotate: 2
+    transdecoder: 12  # Same for blastx and hmmscan
+    trinotate: 12
 
 trinotate:
     evalue: 1e-5
