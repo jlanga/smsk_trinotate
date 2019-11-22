@@ -31,29 +31,8 @@ include: snakefiles + "trinotate.smk"
 
 rule all:
     input:
-        # Trinotate preparations
-        # # Swissprot
-        # DOWNLOAD + "uniprot_sprot.dat.gz",
-        # DB + prefix + ".TaxonomyIndex",
-        # DB + prefix + ".UniprotIndex",
-        # DOWNLOAD +  "uniprot_sprot.pep",
-        # # Eggnog
-        # DOWNLOAD + "NOG.annotations.tsv.gz",
-        # DB + "NOG.annotations.tsv.bulk_load",
-        # # Pfam-A
-        # DOWNLOAD + "Pfam-A.hmm.gz",
-        # DB + "Pfam-A.hmm.gz.pfam_sqlite_bulk_load",
-        # # obo
-        # DOWNLOAD + "go-basic.obo",
-        # DB + "go-basic.obo.tab",
-        # # Db
-        # DB + prefix + ".sqlite",
-        # DB + prefix + ".loaded",
-        # Transdecoder
-        # TRANSDECODER + "transdecoder.cds.fai",
-        # TRANSDECODER + "transdecoder.pep.fai"
-        # TRINOTATE + "blastx.tsv",
-        # TRINOTATE + "blastp.tsv",
-        # TRINOTATE + "hmmscan.tsv",
-        # TRINOTATE + "init.txt",
-        TRINOTATE + "trinotate.tsv"
+        # rules.raw.input,
+        # rules.download.input,
+        # rules.db.input,
+        # rules.transdecoder.input,
+        rules.trinotate.input
