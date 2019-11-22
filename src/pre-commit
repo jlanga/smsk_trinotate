@@ -34,16 +34,15 @@ do_pylint_snakefiles() {
 
     pylint \
         --disable=syntax-error \
-        Snakefile src/snakefiles/*.py
+        Snakefile src/snakefiles/*.smk
 
 }
 
 do_pylint_python() {
 
     pylint --version
-
-    find src -name "*.py" -type f -not -path "*snakefiles*" -print0 \
-    | xargs -0 pylint
+    pylint src \
+        --ignore=src/snakefiles,src/snakehooks
 
 }
 
@@ -68,7 +67,6 @@ fail () {
     echo "$0: [FAILED]"
     exit 1
 }
-
 
 # Run everything
 echo "Cleaning results"

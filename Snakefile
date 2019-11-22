@@ -20,14 +20,14 @@ singularity: "docker://continuumio/miniconda3:4.4.10"
 ASSEMBLY = samples["assembly"][0]
 snakefiles = "src/snakefiles/"
 
-include: snakefiles + "generic.py"
-include: snakefiles + "folders.py"
-include: snakefiles + "clean.py"
-include: snakefiles + "raw.py"
-include: snakefiles + "download.py"
-include: snakefiles + "db.py"
-include: snakefiles + "transdecoder.py"
-include: snakefiles + "trinotate.py"
+include: snakefiles + "generic.smk"
+include: snakefiles + "folders.smk"
+include: snakefiles + "clean.smk"
+include: snakefiles + "raw.smk"
+include: snakefiles + "download.smk"
+include: snakefiles + "db.smk"
+include: snakefiles + "transdecoder.smk"
+include: snakefiles + "trinotate.smk"
 
 rule all:
     input:
