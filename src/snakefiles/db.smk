@@ -107,3 +107,13 @@ rule db_diamond_makedb_uniprot_sprot:
     benchmark: DB + "diamond_makedb_unisprot_sprot.bmk"
     conda: "db.yml"
     shell: "diamond makedb --in {input} --db {params} 2> {log} 1>&2"
+
+
+rule db:
+    input:
+        rules.db_parse_uniprot_sprot.output,
+        rules.db_obo_to_tab.output,
+        rules.db_parse_nog.output,
+        rules.db_parse_pfam.output,
+        rules.db_hmmpress_pfama.output,
+        rules.db_diamond_makedb_uniprot_sprot.output

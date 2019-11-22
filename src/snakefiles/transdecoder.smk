@@ -171,3 +171,7 @@ rule transdecoder_predict:
         mv {params.pep} {output.pep} 2>> {log} 1>&2
         rm -rf {params.dir} {params.checkpoints} 2>> {log} 1>&2
         """
+
+
+rule transdecoder:
+    input: rules.transdecoder_predict.output

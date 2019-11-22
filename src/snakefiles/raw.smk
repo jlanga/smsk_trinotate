@@ -31,3 +31,9 @@ rule raw_gene_to_trans_map:
             > {output.tsv} \
         2> {log}
         """
+
+
+rule raw:
+    input:
+        rules.raw_link_assembly.output,
+        rules.raw_gene_to_trans_map.output

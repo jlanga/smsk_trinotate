@@ -404,3 +404,7 @@ rule trinotate_report:
         > {output} \
         2> {log}
         """
+
+
+rule trinotate:
+    input: rules.trinotate_report.output
