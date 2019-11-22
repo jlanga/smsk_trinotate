@@ -35,60 +35,25 @@ rule trinotate_split_assembly:
         """
 
 
-rule trinotate_blastx_chunk:
-    """
-    Run blastx of each chunk
-    """
+rule trinotate_blastx_assembly:
+    """Run diamond blastx over assembly"""
     input:
         fa = RAW + "assembly.fasta",
-        fai = RAW + "assembly.fasta.fai",
-        chunk = TRINOTATE + "chunks/assembly_{chunk_id}.tsv",
-        blast_db = DB + "uniprot_sprot"
-    output:
-        tsv = TRINOTATE + "blastx/assembly_{chunk_id}.tsv"
-    log:
-        TRINOTATE + "blastx/assembly_{chunk_id}.log"
-    benchmark:
-        TRINOTATE + "blastx/assembly_{chunk_id}.bmk"
-    conda:
-        "trinotate.yml"
+        db = DB + "uniprot_sprot.dmnd"
+    output: TRINOTATE + "blastx.tsv"
+    threads: MAX_THREADS
+    log: TRINOTATE + "blastx.log"
+    benchmark: TRINOTATE + "blastx.bmk"
+    conda: "trinotate.yml"
     shell:
-        """
-        cut -f 1 {input.chunk} \
-        | xargs samtools faidx {input.fa} \
-        | blastx \
-            -db {input.blast_db} \
-            -max_target_seqs 1 \
-            -outfmt 6 \
-            -evalue 1e-5 \
-            -out {output.tsv} \
-        2> {log} 1>&2
-        """
-
-
-rule trinotate_blastx_merge:
-    """
-    Merge results from the different blastxs
-    """
-    input:
-        expand(
-            TRINOTATE + "blastx/assembly_{chunk_id}.tsv",
-            chunk_id=[
-                '{0:05d}'.format(x)
-                for x in range(0, CHUNKS_ANNOTATE)
-            ]
-        )
-    output:
-        tsv = TRINOTATE + "blastx.tsv"
-    log:
-        TRINOTATE + "blastx_merge.log"
-    benchmark:
-        TRINOTATE + "blastx_merge.bmk"
-    conda:
-        "trinotate.yml"
-    shell:
-        "cat {input} > {output} 2> {log}"
-
+        "diamond blastp "
+            "--query {input.fa} "
+            "--db {input.db} "
+            "--outfmt 6 "
+            "--evalue 1e-5 "
+            "--out {output} "
+            "--threads {threads} "
+        "2> {log} 1>&2"
 
 rule trinotate_split_proteome:
     """
@@ -125,59 +90,26 @@ rule trinotate_split_proteome:
         """
 
 
-rule trinotate_blastp_chunk:
-    """
-    Run blastp of each chunk
-    """
+rule trinotate_blastp_proteome:
+    """Run diamond blastp over transdecoder proteome"""
     input:
         pep = TRANSDECODER + "transdecoder.pep",
-        fai = TRANSDECODER + "transdecoder.pep.fai",
-        chunk = TRINOTATE + "chunks/proteome_{chunk_id}.tsv",
-        blast_db = DB + "uniprot_sprot"
-    output:
-        tsv = TRINOTATE + "blastp/proteome_{chunk_id}.tsv"
-    log:
-        TRINOTATE + "blastp/proteome_{chunk_id}.log"
-    benchmark:
-        TRINOTATE + "blastp/proteome_{chunk_id}.bmk"
-    conda:
-        "trinotate.yml"
+        db = DB + "uniprot_sprot.dmnd"
+    output: TRINOTATE + "blastp.tsv"
+    threads: MAX_THREADS
+    log: TRINOTATE + "blastp.log"
+    benchmark: TRINOTATE + "blastp.bmk"
+    conda: "trinotate.yml"
     shell:
-        """
-        cut -f 1 {input.chunk} \
-        | xargs samtools faidx {input.pep} \
-        | blastp \
-            -db {input.blast_db} \
-            -max_target_seqs 1 \
-            -outfmt 6 \
-            -evalue 1e-5 \
-            -out {output.tsv} \
-        2> {log} 1>&2
-        """
+        "diamond blastp "
+            "--query {input.pep} "
+            "--db {input.db} "
+            "--outfmt 6 "
+            "--evalue 1e-5 "
+            "--out {output} "
+            "--threads {threads} "
+        "2> {log} 1>&2"
 
-
-rule trinotate_blastp_merge:
-    """
-    Merge results from the different blastps
-    """
-    input:
-        expand(
-            TRINOTATE + "blastp/proteome_{chunk_id}.tsv",
-            chunk_id=[
-                '{0:05d}'.format(x)
-                for x in range(0, CHUNKS_ANNOTATE)
-            ]
-        )
-    output:
-        tsv = TRINOTATE + "blastp.tsv"
-    log:
-        TRINOTATE + "blastp_merge.log"
-    benchmark:
-        TRINOTATE + "blastp_merge.bmk"
-    conda:
-        "trinotate.yml"
-    shell:
-        "cat {input} > {output} 2> {log}"
 
 
 rule trinotate_hmmscan_chunk:

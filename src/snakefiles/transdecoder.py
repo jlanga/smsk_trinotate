@@ -108,59 +108,24 @@ rule transdecoder_hmmscan_merge:
         """cat {input} > {output} 2> {log}"""
 
 
-rule transdecoder_blastp_chunk:
-    """
-    Run blastp of each chunk
-    """
+rule transdecoder_blastp:
     input:
         pep = "assembly.fasta.transdecoder_dir/longest_orfs.pep",
-        fai = "assembly.fasta.transdecoder_dir/longest_orfs.pep.fai",
-        chunk = TRANSDECODER + "chunks/longest_orfs_{chunk_id}.tsv",
-        blast_db = DB + "uniprot_sprot"
-    output:
-        tsv = TRANSDECODER + "blastp/longest_orfs_{chunk_id}.tsv"
-    log:
-        TRANSDECODER + "blastp/longest_orfs_{chunk_id}.log"
-    benchmark:
-        TRANSDECODER + "blastp/longest_orfs_{chunk_id}.bmk"
-    conda:
-        "transdecoder.yml"
+        db = DB + "uniprot_sprot.dmnd"
+    output: TRANSDECODER + "blastp.tsv"
+    threads: MAX_THREADS
+    log: TRANSDECODER + "blastp.log"
+    benchmark: TRANSDECODER + "blastp.bmk"
+    conda: "transdecoder.yml"
     shell:
-        """
-        cut -f 1 {input.chunk} \
-        | xargs samtools faidx {input.pep} \
-        | blastp \
-            -db {input.blast_db} \
-            -max_target_seqs 1 \
-            -outfmt 6 \
-            -evalue 1e-5 \
-            -out {output.tsv} \
-        2> {log} 1>&2
-        """
-
-
-rule transdecoder_blastp_merge:
-    """
-    Merge results from the different blastps
-    """
-    input:
-        expand(
-            TRANSDECODER + "blastp/longest_orfs_{chunk_id}.tsv",
-            chunk_id=[
-                '{0:05d}'.format(x)
-                for x in range(0, CHUNKS)
-            ]
-        )
-    output:
-        tsv = TRANSDECODER + "blastp.tsv"
-    log:
-        TRANSDECODER + "blastp_merge.log"
-    benchmark:
-        TRANSDECODER + "blastp_merge.bmk"
-    conda:
-        "transdecoder.yml"
-    shell:
-        "cat {input} > {output} 2> {log}"
+        "diamond blastp "
+            "--query {input.pep} "
+            "--db {input.db} "
+            "--outfmt 6 "
+            "--evalue 1e-5 "
+            "--out {output} "
+            "--threads {threads} "
+        "2> {log} 1>&2"
 
 
 rule transdecoder_predict:
