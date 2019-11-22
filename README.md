@@ -8,16 +8,8 @@ This is a workflow based on [smsk](https://github.com/jlanga/smsk) to perform th
 
 ## 2. First steps
 
-Follow the contents of the `.travis.yml` file:
-bash .travis/travis_before_install.sh
-  - export PATH="/home/travis/miniconda3/bin:$PATH"
+0. Make sure you have conda and snakemake installed
 
-install:
-  - bash src/install/conda_env.sh
-
-script:
-  - source activate smsk_trinotate
-  - travis_wait 30 snakemake -j
 1. Clone this repo
 
     ```sh
@@ -25,36 +17,16 @@ script:
     cd smsk_trinotate
     ```
 
-2. (Optional) Install miniconda and export it to your path
-
-    ```sh
-    bash .travis/travis_before_install.sh
-    export PATH="$HOME/miniconda3/bin:$PATH"
-    ```
-
-3. Install requirements
-    ```sh
-    bash src/install/conda_env.sh
-    ```
-
-4. Activate the environment:
-
-    ```sh
-    source activate smsk_trinotate
-    ```
-
-4. Execute the pipeline with test data:
+2. Execute the pipeline with test data:
 
     ```sh
-    snakemake -j
+    snakemake --use-conda -j 4
     ```
 
 ## 3. Analyzing your data
 
-Just paste the path of your transcriptome assembly in the second line (`transcript.fa`)
-
-Also, to increase the speed of the analysis, set the number of chunks to process to 100. To accelerate the blastp, blastx and pfam analysis, the transcriptome and proteome will be split into that number of chunks. This takes advantage of cluster analysis and also the way that blast and hmmscan paralelize.
-
+Just paste the path of your transcriptome assembly in the second line 
+(`transcript.fa`), and the gene-transcript mapping file (`transcript.g2t.tsv`).
 
 ## 4. File organization
 
@@ -81,6 +53,8 @@ smsk
 
 
 ## 5. Notes
+
+- For performance reasons, `diamond` substitutes `blastp` and `blastx` both in Transdecoder and Trinotate.
 
 - Because RNAMMER, TmHMM and SignalP require a registrations, I do not provide rules to perform those analyses.
 

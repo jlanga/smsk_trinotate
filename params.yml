@@ -1,8 +1,10 @@
 # Execution parameters
 ---
+max_threads: 24
+
 chunks:  # Please use #chunks < #sequences
-    transdecoder: 12  # Same for blastx and hmmscan
-    trinotate: 12
+    transdecoder: 4  # Same for blastx and hmmscan
+    trinotate: 4
 
 trinotate:
     evalue: 1e-5

@@ -80,3 +80,12 @@ rule download_pfama:
             {params.url} \
         2> {log}
         """
+
+
+
+rule download:
+    input:
+        rules.download_uniprot_sprot.output,
+        rules.download_nog_annotations.output,
+        rules.download_obo.output,
+        rules.download_pfama.output

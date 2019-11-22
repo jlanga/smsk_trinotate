@@ -1,4 +1,4 @@
-# Environment to run transdecoder, blast and hmmer
+# Environment to run transdecoder, diamond and hmmer
 ---
 channels:
     - conda-forge
@@ -9,4 +9,4 @@ dependencies:
     - coreutils=8.25-0  # split
     - samtools  # any version
     - hmmer=3.1b2=2
-    - blast=2.6.0=boost1.61_0
+    - diamond=0.9.29
