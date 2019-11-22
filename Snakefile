@@ -17,9 +17,10 @@ MAX_THREADS = params["max_threads"]
 
 singularity: "docker://continuumio/miniconda3:4.4.10"
 
-ASSEMBLY = samples["assembly"][0]
-snakefiles = "src/snakefiles/"
+ASSEMBLY = samples.assembly[0]
+GENE_TO_TRANS_MAP = samples["gene_to_trans_map"][0]
 
+snakefiles = "src/snakefiles/"
 include: snakefiles + "generic.smk"
 include: snakefiles + "folders.smk"
 include: snakefiles + "clean.smk"

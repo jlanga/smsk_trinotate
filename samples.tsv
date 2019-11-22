@@ -1,2 +1,2 @@
-assembly
-transcript.fa
+assembly	gene_to_trans_map
+transcript.fa	transcript.g2t.tsv
