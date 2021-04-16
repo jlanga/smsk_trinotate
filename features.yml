@@ -3,7 +3,7 @@
 swissprot:
     ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz
 NOG.annotations:
-    http://eggnogdb.embl.de/download/latest/data/NOG/NOG.annotations.tsv.gz
+    http://eggnog5.embl.de/download/eggnog_4.5/data/NOG/NOG.annotations.tsv.gz
 obo:
     http://purl.obolibrary.org/obo/go/go-basic.obo
 Pfam-A:
