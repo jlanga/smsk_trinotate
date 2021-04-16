@@ -10,3 +10,4 @@ dependencies:
     - diamond=0.9.29
     - trinotate=3.0.2=pl5.22.0_0
     - samtools  # any
+    - libdb=6.1  # ensure for transdecoder

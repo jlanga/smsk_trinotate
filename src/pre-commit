@@ -24,7 +24,7 @@ do_pipeline_dry_run() {
 
 do_pipeline() {
     snakemake --version
-    snakemake --use-conda -j
+    snakemake --use-conda -j 4
 }
 
 

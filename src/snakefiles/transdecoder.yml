@@ -10,3 +10,4 @@ dependencies:
     - samtools  # any version
     - hmmer=3.1b2=2
     - diamond=0.9.29
+    - libdb=6.1  # for transdecoder
