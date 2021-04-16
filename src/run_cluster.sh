@@ -12,5 +12,6 @@ cluster_string+="--time {cluster.time} "
 snakemake \
     --jobs 999 \
     --use-conda \
+    --cluster-config cluster.yml \
     --cluster "$cluster_string" \
     "$@"

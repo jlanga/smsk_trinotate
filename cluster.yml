@@ -1,5 +1,6 @@
-# Cluster parameters
+# Configuration file for the cluster
 ---
 __default__:
-    time: "06:00:00"
+    time: 01:00:00
     mem: 1024
+    cpus: 1
